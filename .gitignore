@@ -3,3 +3,4 @@ node_modules
 movie-urls.json
 tmp/*
 test.js
+backup/*

@@ -1,15 +1,53 @@
 const _ = require('lodash');
 const util = require('util');
+const utils = require('../../src/utils');
 
 const embedTemplate = {
-  rapidVideo: 'https://www.rapidvideo.com/e/%s',
+  rapidvideo: 'https://www.rapidvideo.com/e/%s',
   oload: 'https://oload.stream/embed/%s',
   sendit: 'https://sendit.cloud/embed-%s.html',
   uptobox: 'https://uptostream.com/iframe/%s',
-  youtube: 'https://www.youtube.com/embed/%s',
   openload: 'https://openload.pw/embed/%s',
   uptostream: 'https://uptostream.com/iframe/%s',
   userscloud: 'https://userscloud.com/embed-%s',
+  tusfiles: 'https://tusfiles.net/embed-%s.html',
+  thevideo: 'https://thevideo.me/embed-%s',
+};
+
+const specialEmbedTemplate = {
+  opload: 'https://openload.pw/embed/%s',
+  youtube: 'https://www.youtube.com/embed/%s',
+};
+
+const embedKeys = _.keys(embedTemplate);
+
+const getProvider = (downloadLink) => {
+  let provider;
+
+  _.forEach(embedKeys, (embedKey) => {
+    if (downloadLink.indexOf(embedKey) >= 0) {
+      provider = embedKey;
+
+      return false;
+    }
+
+    return true;
+  });
+
+  return provider;
+};
+
+const getYoutubeUniqueCode = (youtubeLink) => {
+  let indexOfV = youtubeLink.indexOf('v=') + 2;
+
+  let uniqueCode = '';
+
+  while (utils.isAlphaNumeric(youtubeLink[indexOfV])) {
+    uniqueCode += youtubeLink[indexOfV];
+    indexOfV += 1;
+  }
+
+  return uniqueCode;
 };
 
 const createEmbedLink = (downloadLink) => {
@@ -19,36 +57,10 @@ const createEmbedLink = (downloadLink) => {
     .last()
     .value();
 
-  if (downloadLink.indexOf('rapidvideo') >= 0) {
-    return util.format(embedTemplate.rapidVideo, uniqueCode);
-  }
+  const provider = getProvider(downloadLink);
 
-  if (downloadLink.indexOf('oload') >= 0) {
-    return util.format(embedTemplate.oload, uniqueCode);
-  }
-
-  if (downloadLink.indexOf('sendit') >= 0) {
-    return util.format(embedTemplate.sendit, uniqueCode);
-  }
-
-  if (downloadLink.indexOf('uptobox') >= 0) {
-    return util.format(embedTemplate.uptobox, uniqueCode);
-  }
-
-  if (downloadLink.indexOf('uptostream') >= 0) {
-    return util.format(embedTemplate.uptostream, uniqueCode);
-  }
-
-  if (downloadLink.indexOf('openload') >= 0) {
-    return util.format(embedTemplate.openload, uniqueCode);
-  }
-
-  if (downloadLink.indexOf('userscloud') >= 0) {
-    return util.format(embedTemplate.userscloud, uniqueCode);
-  }
-
-  if (downloadLink.indexOf('tusfiles') >= 0) {
-    return undefined;
+  if (provider) {
+    return util.format(embedTemplate[provider], uniqueCode);
   }
 
   if (downloadLink.indexOf('opload') >= 0) {
@@ -59,7 +71,13 @@ const createEmbedLink = (downloadLink) => {
       .last()
       .value();
 
-    return util.format(embedTemplate.openload, uniqueCode);
+    return util.format(specialEmbedTemplate.opload, uniqueCode);
+  }
+
+  if (downloadLink.indexOf('youtube') >= 0) {
+    const utubeUniqueCode = getYoutubeUniqueCode(downloadLink);
+
+    return util.format(specialEmbedTemplate.youtube, utubeUniqueCode);
   }
 
   return undefined;

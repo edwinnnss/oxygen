@@ -1,13 +1,29 @@
 require('../src/init');
+
+const _ = require('lodash');
 const fs = require('fs');
 const Bluebird = require('bluebird');
 
+const Movie = require('../src/database/models/movie');
 const movieQuery = require('../src/database/queries/movie');
 
 const getMovieUrls = require('./lk21/get-movie-urls');
 const getMovie = require('./lk21/get-movie');
+const createEmbedLink = require('./lk21/create-embed-link');
 
 const movieUrlPath = 'tmp/movie-urls.json';
+
+const setEmbedLinks = async () => {
+  const movies = await Movie.find();
+
+  await Bluebird.each(movies, async (movie, index) => {
+    console.log(`${index + 1}/${movies.length} set ${movie.source}`);
+    const { downloadLinks } = movie;
+
+    movie.embedlinks = _.compact(_.map(downloadLinks, createEmbedLink));
+    await movie.save();
+  });
+};
 
 Bluebird.resolve()
   .then(async () => {
@@ -28,7 +44,9 @@ Bluebird.resolve()
       await movieQuery.upsert(movie);
     });
 
-    // await getMovie('http://lk21.red/state-like-sleep-2018/');
+    await setEmbedLinks();
+    await getMovie('http://lk21.red/state-like-sleep-2018/');
   })
+  .then(setEmbedLinks)
   .catch(console.log)
   .finally(() => process.exit(3));
