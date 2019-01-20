@@ -1,0 +1,13 @@
+{
+  "extends": "airbnb",
+  "rules": {
+      "no-await-in-loop": "off",
+      "no-console": "off",
+      "import/no-dynamic-require": "off",
+      "no-param-reassign": "off",
+      "quote-props": "off",
+      "arrow-body-style": "off",
+      "max-len":"off",
+      "no-path-concat": "off"
+   }
+}
