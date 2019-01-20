@@ -21,6 +21,7 @@ const setEmbedLinks = async () => {
     const { downloadLinks } = movie;
 
     movie.embedlinks = _.compact(_.map(downloadLinks, createEmbedLink));
+
     await movie.save();
   });
 };
@@ -44,9 +45,7 @@ Bluebird.resolve()
       await movieQuery.upsert(movie);
     });
 
-    await setEmbedLinks();
-    await getMovie('http://lk21.red/state-like-sleep-2018/');
+    // await getMovie('http://lk21.red/state-like-sleep-2018/');
   })
-  .then(setEmbedLinks)
   .catch(console.log)
   .finally(() => process.exit(3));

@@ -1,13 +1,33 @@
 const _ = require('lodash');
 const isUrl = require('is-url');
-
 const cheerio = require('cheerio');
+const Bluebird = require('bluebird');
+
 const utils = require('../../src/utils');
+
+const getProviders = async (movieId, totalProviders) => {
+  return Bluebird.map(_.range(totalProviders), async (index) => {
+    const payload = {
+      action: 'muvipro_player_content',
+      tab: `player${index + 1}`,
+      post_id: movieId,
+    };
+
+    const response = await utils.formPost('http://lk21.red/wp-admin/admin-ajax.php', payload);
+    const $ = cheerio.load(response.text);
+
+    return $('iframe').attr('src');
+  }, { concurrency: 1 });
+};
 
 const getMovie = async (movieUrl) => {
   const response = await utils.get(movieUrl);
   const $ = cheerio.load(response.text);
 
+  const movieId = $('#muvipro_player_content_id').attr('data-id');
+  const totalProviders = $('.muvipro-player-tabs li').length;
+
+  const embedLinks = await getProviders(movieId, totalProviders);
   const slug = _.last(_.compact(movieUrl.split('/')));
   const name = $('h1.entry-title').text();
   const released = $('table time[itemprop="dateCreated"]').text();
@@ -52,14 +72,15 @@ const getMovie = async (movieUrl) => {
   });
 
   return {
+    coverImageUrl,
+    director,
+    embedLinks,
+    language,
     name,
     released,
-    language,
     slug,
-    director,
-    coverImageUrl,
-    trailerUrl,
     summary,
+    trailerUrl,
     source: movieUrl,
     tags: Array.from(tags),
     duration: _.replace(duration, /[^0-9]/g, ''),
