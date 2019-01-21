@@ -45,7 +45,8 @@ Bluebird.resolve()
       await movieQuery.upsert(movie);
     });
 
-    // await getMovie('http://lk21.red/state-like-sleep-2018/');
+    // const movie = await getMovie('http://lk21.red/avengers-infinity-war-2018/');
+    // console.log(movie);
   })
   .catch(console.log)
   .finally(() => process.exit(3));

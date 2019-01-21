@@ -34,7 +34,8 @@ const getMovie = async (movieUrl) => {
   const duration = $('.gmr-movie-runtime').text();
   const language = $('table span[property="inLanguage"]').text();
   const coverImageUrl = $('meta[property="og:image"]').attr('content');
-  const director = $('table span[itemprop="director"]').text();
+  const quality = $('.gmr-movie-quality a').text();
+
   const summary = $('#muvipro_player_content_id > div.entry-content.entry-content-single > p:nth-child(1)').text();
 
   let trailerUrl = $('#muvipro_player_content_id > ul > li:nth-child(3) > a').attr('href');
@@ -42,6 +43,13 @@ const getMovie = async (movieUrl) => {
   if (!isUrl(trailerUrl)) {
     trailerUrl = '';
   }
+
+  const directors = new Set();
+  $('table span[itemprop="director"]').each((index, elem) => {
+    const director = _.trim($(elem).text());
+
+    directors.add(director);
+  });
 
   const tags = new Set();
   $('meta[property="article:tag"]').each((index, elem) => {
@@ -73,7 +81,6 @@ const getMovie = async (movieUrl) => {
 
   return {
     coverImageUrl,
-    director,
     embedLinks,
     language,
     name,
@@ -81,7 +88,9 @@ const getMovie = async (movieUrl) => {
     slug,
     summary,
     trailerUrl,
+    quality,
     source: movieUrl,
+    directors: Array.from(directors),
     tags: Array.from(tags),
     duration: _.replace(duration, /[^0-9]/g, ''),
     genres: Array.from(genres),

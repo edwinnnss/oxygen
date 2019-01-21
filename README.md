@@ -5,7 +5,7 @@
 ##### return
 ```
 [{
- coverImageUrl: String,
+  coverImageUrl: String,
   duration: String,
   language: String,
   name: String,
@@ -14,7 +14,8 @@
   source: String,
   summary: String,
   trailerUrl: String,
-  director: String,
+  quality: String,
+  directors: [String],
   downloadLinks: [String],
   embedLinks: [String],
   genres: [String],
@@ -38,7 +39,8 @@
   source: String,
   summary: String,
   trailerUrl: String,
-  director: String,
+  quality: String,
+  directors: [String],
   downloadLinks: [String],
   embedLinks: [String],
   genres: [String],
