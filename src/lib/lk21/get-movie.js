@@ -3,7 +3,7 @@ const isUrl = require('is-url');
 const cheerio = require('cheerio');
 const Bluebird = require('bluebird');
 
-const utils = require('../../src/utils');
+const utils = require('../../utils');
 
 const getProviders = async (movieId, totalProviders) => {
   return Bluebird.map(_.range(totalProviders), async (index) => {

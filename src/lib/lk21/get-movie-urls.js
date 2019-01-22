@@ -1,5 +1,5 @@
 const cheerio = require('cheerio');
-const utils = require('../../src/utils');
+const utils = require('../../utils');
 
 const constant = {
   baseUrl: 'http://lk21.red/',

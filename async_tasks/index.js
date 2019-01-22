@@ -1,30 +1,14 @@
 require('../src/init');
 
-const _ = require('lodash');
 const fs = require('fs');
 const Bluebird = require('bluebird');
 
-const Movie = require('../src/database/models/movie');
 const movieQuery = require('../src/database/queries/movie');
 
-const getMovieUrls = require('./lk21/get-movie-urls');
-const getMovie = require('./lk21/get-movie');
-const createEmbedLink = require('./lk21/create-embed-link');
+const getMovieUrls = require('../src/lib/lk21/get-movie-urls');
+const getMovie = require('../src/lib/lk21/get-movie');
 
 const movieUrlPath = 'tmp/movie-urls.json';
-
-const setEmbedLinks = async () => {
-  const movies = await Movie.find();
-
-  await Bluebird.each(movies, async (movie, index) => {
-    console.log(`${index + 1}/${movies.length} set ${movie.source}`);
-    const { downloadLinks } = movie;
-
-    movie.embedlinks = _.compact(_.map(downloadLinks, createEmbedLink));
-
-    await movie.save();
-  });
-};
 
 Bluebird.resolve()
   .then(async () => {
