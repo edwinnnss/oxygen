@@ -49,7 +49,7 @@ const getMovieUrls = async () => {
     } while (shouldNext);
   });
 
-  return movieUrlSet;
+  return Array.from(movieUrlSet);
 };
 
 module.exports = getMovieUrls;

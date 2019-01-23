@@ -102,7 +102,7 @@ const getMovie = slug => Bluebird.resolve()
     const posterUrl = getValueBetweenBracket($('div.mvic-thumb').attr('style'));
     const coverImageUrl = getValueBetweenBracket($('#mv-ply').attr('style'));
     const duration = _.replace($('#mv-info > div.mvi-content > div.mvic-desc > div.mvic-info > div.mvici-right > p:nth-child(1)'), /[^0-9]/g, '');
-    const name = $('h3[itemprop="name"]').attr('content');
+    const name = $('[itemprop="name"]').attr('content'); // <h3>(movie), <meta>(film)
     const released = $('meta[itemprop="datePublished"]').attr('content');
     const summary = $('div[itemprop="description"]').text();
     const trailerUrl = $('#iframe-trailer').attr('src');

@@ -12,6 +12,10 @@ const utils = require('../../src/utils');
 
 const movieUrlPath = 'tmp/tmdb-movie-urls.json';
 
+if (!fs.existsSync('tmp')) {
+  fs.mkdirSync('tmp');
+}
+
 Bluebird.resolve()
   .then(async () => {
     let slugs;
