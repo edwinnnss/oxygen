@@ -8,6 +8,7 @@
       "quote-props": "off",
       "arrow-body-style": "off",
       "max-len":"off",
-      "no-path-concat": "off"
+      "no-path-concat": "off",
+      "prefer-template":"off"
    }
 }

@@ -1,14 +1,14 @@
-require('../src/init');
+require('../../src/init');
 
 const fs = require('fs');
 const Bluebird = require('bluebird');
 
-const movieQuery = require('../src/database/queries/movie');
+const movieQuery = require('../../src/database/queries/movie');
 
-const getMovieUrls = require('../src/lib/lk21/get-movie-urls');
-const getMovie = require('../src/lib/lk21/get-movie');
+const getMovieUrls = require('../../src/lib/lk21/get-movie-urls');
+const getMovie = require('../../src/lib/lk21/get-movie');
 
-const movieUrlPath = 'tmp/movie-urls.json';
+const movieUrlPath = 'tmp/tmdb-movie-urls.json';
 
 Bluebird.resolve()
   .then(async () => {
