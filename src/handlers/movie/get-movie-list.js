@@ -53,7 +53,8 @@ module.exports = (req, res) => Bluebird.resolve()
       .find(filter)
       .sort(sortCriteria)
       .skip((page - 1) * LIMIT)
-      .limit(LIMIT);
+      .limit(LIMIT)
+      .lean();
 
     return res.send(movies);
   })
