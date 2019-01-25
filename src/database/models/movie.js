@@ -14,7 +14,11 @@ const MovieSchema = new Schema({
   quality: String,
   ratingCount: String,
   ratingValue: String,
-  released: String,
+  released: {
+    year: Number,
+    month: Number,
+    day: Number,
+  },
   slug: String,
   source: String,
   sourceMetaData: Object,

@@ -4,77 +4,11 @@ const Bluebird = require('bluebird');
 const _ = require('lodash');
 const cheerio = require('cheerio');
 
-const superagent = require('superagent').agent();
-const decoder = require('./decoder');
+const getSourceMetaData = require('./get-source-meta-data');
 const utils = require('../../utils');
-
-const request = Bluebird.promisifyAll(superagent);
+const getKeyStr = require('./get-key-string');
 
 const baseUrl = 'https://indoxxi.bz';
-
-const getVariableValue = (responseText, keyword, endChar) => {
-  const keywordIndex = responseText.indexOf(keyword);
-  let index = keywordIndex + keyword.length;
-
-  let value = '';
-  let next = true;
-
-  while (next) {
-    const indexChar = responseText[index];
-    if (indexChar !== endChar) {
-      value += indexChar;
-      index += 1;
-    } else {
-      next = false;
-    }
-  }
-
-  return value;
-};
-
-const getKeyStr = movieUrl => Bluebird.resolve()
-  .then(async () => {
-    const response = await request.get('https://indoxxi.bz/js/v76.js')
-      .buffer(true)
-      .set('Referer', movieUrl)
-      .set('Accept', '*/*')
-      .set('Origin', 'https://indoxxi.bz')
-      .set('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36');
-
-    return getVariableValue(response.text, '_keyStr:"', '"');
-  });
-
-// const getMovieDbOrgData = async (tmdbId) => {
-//   const response = await utils.get(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${process.env.TMBD_API_KEY}`);
-
-//   return response.text;
-// };
-
-const getSourceMetaData = async (movieUrl, keyStr, playResponse) => {
-  const $ = cheerio.load(playResponse.text);
-  const cookieName = getVariableValue(playResponse.text, 'var cookie_name="', '"');
-  const ts2 = getVariableValue(playResponse.text, 'ts2=', ';');
-  const tmdbId = $('#downloadmv').attr('data-tmdb');
-
-  const tokenUrl = decoder.getTokenUrl(cookieName, tmdbId, ts2);
-
-  console.log('Request token to', tokenUrl);
-
-  const encoded = await request.get(tokenUrl)
-    .set('Referer', movieUrl)
-    .set('Accept', '*/*')
-    .set('Origin', 'https://indoxxi.bz')
-    .set('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36');
-
-  const encodedText = decoder.decode(keyStr, encoded.text);
-  // const data = JSON.parse(await getMovieDbOrgData(tmdbId));
-
-  if (!encodedText) {
-    return undefined;
-  }
-
-  return JSON.parse(encodedText);
-};
 
 const getValueBetweenBracket = (str) => {
   const firstBracket = _.indexOf(str, '(');
@@ -103,7 +37,7 @@ const getMovie = slug => Bluebird.resolve()
     const coverImageUrl = getValueBetweenBracket($('#mv-ply').attr('style'));
     const duration = _.replace($('#mv-info > div.mvi-content > div.mvic-desc > div.mvic-info > div.mvici-right > p:nth-child(1)'), /[^0-9]/g, '');
     const name = $('h3[itemprop="name"]').attr('content');
-    const released = $('meta[itemprop="datePublished"]').attr('content');
+    const releasedText = $('meta[itemprop="datePublished"]').attr('content');
     const summary = $('div[itemprop="description"]').text();
     const trailerUrl = $('#iframe-trailer').attr('src');
     const quality = _.trim($('span.quality').text());
@@ -139,10 +73,13 @@ const getMovie = slug => Bluebird.resolve()
       keywords.push(keyword);
     });
 
-    const year = _.chain(released)
-      .split('-')
-      .head()
-      .value();
+    const [year, month, day] = _.toString(releasedText).split('-');
+
+    const released = {
+      year: _.replace(year, /[^0-9]/g, ''),
+      month: _.replace(month, /[^0-9]/g, ''),
+      day: _.replace(day, /[^0-9]/g, ''),
+    };
 
     return {
       countries,
@@ -155,9 +92,9 @@ const getMovie = slug => Bluebird.resolve()
       posterUrl,
       quality,
       ratingCount,
-      ratingValue,
+      ratingValue: (ratingValue === 'N/A') ? '0' : ratingValue,
       released,
-      slug: _.kebabCase(name + year || ''),
+      slug: _.kebabCase(name + (year || '')),
       source: movieUrl,
       sourceMetaData,
       stars,
