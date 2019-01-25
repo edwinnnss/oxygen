@@ -5,22 +5,28 @@
 ##### return
 ```
 [{
+  countries: [String],
   coverImageUrl: String,
+  directors: [String],
   duration: String,
-  language: String,
+  genres: [String],
+  keywords: [String],
   name: String,
-  released: String,
+  posterUrl: String,
+  quality: String,
+  ratingCount: String,
+  ratingValue: String,
+  released: {
+    year: Number,
+    month: Number,
+    day: Number,
+  },
   slug: String,
   source: String,
+  sourceMetaData: Object,
+  stars: [String],
   summary: String,
   trailerUrl: String,
-  quality: String,
-  directors: [String],
-  downloadLinks: [String],
-  embedLinks: [String],
-  genres: [String],
-  stars: [String],
-  tags: [String],
 }]
 ```
 
@@ -30,21 +36,27 @@
 ##### return
 ```
 {
+  countries: [String],
   coverImageUrl: String,
+  directors: [String],
   duration: String,
-  language: String,
+  genres: [String],
+  keywords: [String],
   name: String,
-  released: String,
+  posterUrl: String,
+  quality: String,
+  ratingCount: String,
+  ratingValue: String,
+  released: {
+    year: Number,
+    month: Number,
+    day: Number,
+  },
   slug: String,
   source: String,
+  sourceMetaData: Object,
+  stars: [String],
   summary: String,
   trailerUrl: String,
-  quality: String,
-  directors: [String],
-  downloadLinks: [String],
-  embedLinks: [String],
-  genres: [String],
-  stars: [String],
-  tags: [String],
 }
 ```
