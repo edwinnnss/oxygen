@@ -26,7 +26,9 @@ Bluebird.resolve()
       counter += 1;
       const movie = await getMovie(movieUrl);
 
-      await movieQuery.upsert(movie);
+      if (movie) {
+        await movieQuery.upsert(movie);
+      }
     });
 
     // const movie = await getMovie('http://lk21.red/avengers-infinity-war-2018/');

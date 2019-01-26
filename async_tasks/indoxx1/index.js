@@ -49,7 +49,11 @@ Bluebird.resolve()
       while (tryAgain) {
         try {
           const movie = await getMovie(slug);
-          await movieQuery.upsert(movie);
+
+          if (movie) {
+            await movieQuery.upsert(movie);
+          }
+
           tryAgain = false;
         } catch (error) {
           console.log('Try again leh', JSON.stringify(error, null, 2));

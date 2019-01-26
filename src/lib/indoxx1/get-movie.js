@@ -29,6 +29,10 @@ const getMovie = slug => Bluebird.resolve()
       await utils.get(playUrl),
     ]);
 
+    if (response.status === 404) {
+      return undefined;
+    }
+
     const sourceMetaData = await getSourceMetaData(movieUrl, keyStr, playResponse);
     // const response = await utils.get(movieUrl);
 
@@ -107,8 +111,7 @@ module.exports = getMovie;
 
 // Bluebird.resolve()
 //   .then(async () => {
-//     const movie = await getMovie('/movie/io-2019-9aap');
-//     console.log(movie);
+//     const movie = await getMovie('/movie/ip-man-2-2010-sww');
 //   })
 //   .catch(console.log)
 //   .finally(() => process.exit(3));
