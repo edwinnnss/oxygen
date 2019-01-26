@@ -36,9 +36,12 @@ Bluebird.resolve()
       console.log(`${counter}/${slugs.length} | Extract data from ${slug}`);
       counter += 1;
 
-      const checkMovie = await Movie.findOne({
-        source: `https://indoxxi.bz${slug}`,
-      });
+      const checkMovie = await Movie
+        .findOne({
+          source: `https://indoxxi.bz${slug}`,
+        })
+        .select('source')
+        .lean();
 
       if (checkMovie) {
         return;

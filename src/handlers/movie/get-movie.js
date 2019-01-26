@@ -17,11 +17,9 @@ module.exports = (req, res) => Bluebird.resolve()
     let movie = movieCache.get(slug);
 
     if (movie) {
-      console.log('CACHED !');
       return res.send(movie);
     }
 
-    console.log('NO CACHED !');
     movie = await Movie
       .findOne({ slug })
       .lean();

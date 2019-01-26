@@ -26,11 +26,17 @@ const createFilter = ({ genres, years }) => {
 };
 
 const createSortCriteria = ({ sortBy, sortDirection }) => {
-  const sortCriteria = { createdAt: -1 };
+  const sortCriteria = {};
 
   if (sortBy === 'ratingValue') {
-    sortCriteria.ratingValue = sortDirection || -1;
+    _.set(sortCriteria, 'ratingValue', sortDirection || -1);
+  } else if (sortBy === 'latest') {
+    sortCriteria['released.year'] = sortDirection || -1;
+    sortCriteria['released.month'] = sortDirection || -1;
+    sortCriteria['released.day'] = sortDirection || -1;
   }
+
+  sortCriteria.createdAt = -1;
 
   return sortCriteria;
 };
@@ -45,9 +51,6 @@ module.exports = (req, res) => Bluebird.resolve()
 
     const filter = createFilter(req.query);
     const sortCriteria = createSortCriteria(req.query);
-
-    console.log(JSON.stringify(filter, null, 2));
-    console.log(JSON.stringify(sortCriteria, null, 2));
 
     const movies = await Movie
       .find(filter)

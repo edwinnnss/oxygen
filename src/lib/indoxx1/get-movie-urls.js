@@ -1,6 +1,5 @@
 const Bluebird = require('bluebird');
 const cheerio = require('cheerio');
-const fs = require('fs');
 
 const utils = require('../../utils');
 

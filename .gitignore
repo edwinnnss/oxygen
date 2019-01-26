@@ -4,3 +4,4 @@ movie-urls.json
 tmp/*
 test.js
 backup/*
+*.sh
