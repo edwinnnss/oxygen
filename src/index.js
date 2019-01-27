@@ -2,6 +2,7 @@ require('./init');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 const cors = require('cors');
 
 const movieRouters = require('./routes/movie');
@@ -12,6 +13,7 @@ const port = process.env.PORT || 3000;
 app.use(cors()); // for now, enable all domain
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(morgan('combined'));
 
 app.use('/movie', movieRouters);
 

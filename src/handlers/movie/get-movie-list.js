@@ -86,7 +86,7 @@ module.exports = (req, res) => Bluebird.resolve()
     const filter = createFilter(req.query);
     const sortCriteria = createSortCriteria(req.query);
 
-    const cacheKey = JSON.stringify(filter) + JSON.stringify(sortCriteria);
+    const cacheKey = page + JSON.stringify(filter) + JSON.stringify(sortCriteria);
 
     let movies = movieListCache.get(cacheKey);
 
