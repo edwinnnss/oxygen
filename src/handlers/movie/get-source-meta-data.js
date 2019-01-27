@@ -9,7 +9,8 @@ module.exports = (req, res) => Bluebird.resolve()
   .then(async () => {
     const { slug } = req.params;
     const movie = await Movie
-      .findOne({ slug });
+      .findOne({ slug })
+      .select('name sourceMetaData');
 
     if (!movie) {
       return res.send(null);

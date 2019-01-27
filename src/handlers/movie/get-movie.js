@@ -15,6 +15,7 @@ module.exports = (req, res) => Bluebird.resolve()
 
     movie = await Movie
       .findOne({ slug })
+      .select('countries coverImageUrl directors duration genres keywords name posterUrl quality ratingCount ratingValue released slug stars summary trailerUrl')
       .lean();
 
     if (!movie) {

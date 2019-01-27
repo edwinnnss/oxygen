@@ -42,7 +42,7 @@ const createYearsFilter = (str) => {
   return undefined;
 };
 
-const createFilter = ({ genres, years, director, star }) => {
+const createFilter = ({ genres, years, director, star, search }) => {
   const filter = {};
 
   if (genres) {
@@ -62,6 +62,13 @@ const createFilter = ({ genres, years, director, star }) => {
 
   if (star) {
     filter['stars'] = star;
+  }
+
+  if (search) {
+    filter['name'] = {
+      $regex: search,
+      $options: 'i',
+    };
   }
 
   return _.compactObject(filter);
@@ -104,12 +111,13 @@ module.exports = (req, res) => Bluebird.resolve()
 
     movies = await Movie
       .find(filter)
+      .select('countries coverImageUrl directors duration genres name posterUrl quality ratingCount ratingValue released slug stars')
       .sort(sortCriteria)
       .skip((page - 1) * LIMIT)
       .limit(LIMIT)
       .lean();
 
-      moviesCache.set(cacheKey, movies);
+    moviesCache.set(cacheKey, movies);
 
     return res.send(movies);
   })
