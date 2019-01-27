@@ -3,6 +3,12 @@ const superagent = require('superagent').agent();
 
 const request = Bluebird.promisifyAll(superagent);
 
+exports.checkResponse = async (url) => {
+  return request.get(url)
+    .set('Range', 'bytes=0-150')
+    .timeout(10000);
+};
+
 exports.get = async (url) => {
   let credit = 10;
   let error = true;

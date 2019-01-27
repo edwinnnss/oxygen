@@ -1,3 +1,4 @@
+require('../src/init');
 const Bluebird = require('bluebird');
 
 const Movie = require('../src/database/models/movie');

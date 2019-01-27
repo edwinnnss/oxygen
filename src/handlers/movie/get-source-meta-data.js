@@ -1,16 +1,84 @@
+const _ = require('lodash');
 const Bluebird = require('bluebird');
+
 const Movie = require('../../database/models/movie');
 
 const getKeyString = require('../../lib/indoxx1/get-key-string');
 const getSourceMetaData = require('../../lib/indoxx1/get-source-meta-data');
-const utils = require('../../utils');
+const { get, checkResponse } = require('../../utils');
+
+const BANNED_TYPE = new Set(['drives_muvi', 'drives_lk21', 'drives']);
+
+const renameLabel = (source) => {
+  if (_.toLower(source.label) === 'hd') {
+    source.label = '720p';
+  } else if (_.toLower(source.label) === 'sd') {
+    source.label = '360p';
+  }
+
+  return source;
+};
+
+const filterResponse = async (source) => {
+  if (_.get(source, 'file', '').indexOf('google') === -1) {
+    return source;
+  }
+
+  let statusCode;
+
+  try {
+    const { status } = await checkResponse(source.file);
+    statusCode = status;
+  } catch (errResponse) {
+    statusCode = errResponse.status;
+  }
+
+  if (statusCode < 200 || statusCode >= 300) {
+    return Bluebird.resolve();
+  }
+
+  return source;
+};
+
+const filterOffLabel = (sub) => {
+  if (sub.label === 'off') {
+    return Bluebird.resolve();
+  }
+
+  return sub;
+};
+
+const modifySourceMetaData = async sourceMetaData => Bluebird.map(sourceMetaData, async (data) => {
+  if (_.isArray(data)) {
+    return _.chain(data)
+      .map(filterOffLabel)
+      .compact()
+      .value();
+  }
+
+  const metaType = _.get(data, 'meta.type');
+  if (BANNED_TYPE.has(metaType)) {
+    return Bluebird.resolve();
+  }
+
+  let sourcesPatch = _.map(data.sources, renameLabel);
+  sourcesPatch = await Bluebird.map(sourcesPatch, filterResponse);
+
+  if (_.compact(sourcesPatch).length === 0) {
+    return Bluebird.resolve();
+  }
+
+  data.sources = sourcesPatch;
+
+  return data;
+});
 
 module.exports = (req, res) => Bluebird.resolve()
   .then(async () => {
     const { slug } = req.params;
     const movie = await Movie
       .findOne({ slug })
-      .select('name sourceMetaData');
+      .select('name sourceMetaData source');
 
     if (!movie) {
       return res.send(null);
@@ -21,13 +89,13 @@ module.exports = (req, res) => Bluebird.resolve()
 
       const [keyString, playResponse] = await Bluebird.all([
         await getKeyString(movie.source),
-        await utils.get(playUrl),
+        await get(playUrl),
       ]);
 
       const sourceMetaDataFromWebsite = await getSourceMetaData(movie.source, keyString, playResponse);
 
       if (sourceMetaDataFromWebsite) {
-        movie.sourceMetaData = sourceMetaDataFromWebsite;
+        movie.sourceMetaData = await modifySourceMetaData(sourceMetaDataFromWebsite);
 
         await movie.save();
       }
