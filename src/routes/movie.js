@@ -1,13 +1,18 @@
 const express = require('express');
 
-const getMovieListHandler = require('../handlers/movie/get-movie-list');
+const getMoviesHandler = require('../handlers/movie/get-movies');
 const getMovieHandler = require('../handlers/movie/get-movie');
-const getSourceMetaData = require('../handlers/movie/get-source-meta-data');
+const getSourceMetaDataHandler = require('../handlers/movie/get-source-meta-data');
+
+const getGenresHandler = require('../handlers/genre/get-genres');
 
 const router = express();
 
-router.get('/', getMovieListHandler);
+router.get('/', getMoviesHandler);
+router.get('/genres', getGenresHandler);
+
 router.get('/:slug', getMovieHandler);
-router.get('/:slug/play', getSourceMetaData);
+router.get('/:slug/play', getSourceMetaDataHandler);
+
 
 module.exports = router;

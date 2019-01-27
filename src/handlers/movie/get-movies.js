@@ -2,7 +2,7 @@ const _ = require('lodash');
 const Bluebird = require('bluebird');
 const Movie = require('../../database/models/movie');
 
-const { movieListCache } = require('../../lru-caches');
+const { moviesCache } = require('../../lru-caches');
 
 const LIMIT = 24;
 
@@ -96,7 +96,7 @@ module.exports = (req, res) => Bluebird.resolve()
 
     const cacheKey = page + JSON.stringify(filter) + JSON.stringify(sortCriteria);
 
-    let movies = movieListCache.get(cacheKey);
+    let movies = moviesCache.get(cacheKey);
 
     if (movies) {
       return res.send(movies);
@@ -109,7 +109,7 @@ module.exports = (req, res) => Bluebird.resolve()
       .limit(LIMIT)
       .lean();
 
-    movieListCache.set(cacheKey, movies);
+      moviesCache.set(cacheKey, movies);
 
     return res.send(movies);
   })

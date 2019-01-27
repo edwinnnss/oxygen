@@ -1,9 +1,11 @@
 const LRU = require('lru-cache');
 
 const movieCache = new LRU(5000);
-const movieListCache = new LRU(5000);
+const moviesCache = new LRU(5000);
+const genresCache = new LRU(10);
 
 module.exports = {
   movieCache,
-  movieListCache,
+  moviesCache,
+  genresCache,
 };

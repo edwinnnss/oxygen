@@ -12,6 +12,5 @@
       "src": "/(.*)",
       "dest": "src/index.js"
     }
-  ],
-  "alias": "oxygen"
+  ]
 }
