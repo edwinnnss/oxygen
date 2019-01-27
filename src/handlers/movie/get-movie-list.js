@@ -2,7 +2,43 @@ const _ = require('lodash');
 const Bluebird = require('bluebird');
 const Movie = require('../../database/models/movie');
 
-const LIMIT = 15;
+const LIMIT = 24;
+
+_.mixin({
+  compactObject: (o) => {
+    _.each(o, (v, k) => {
+      if (!v) {
+        delete o[k];
+      }
+    });
+    return o;
+  },
+});
+
+const createYearsFilter = (str) => {
+  if (str.indexOf(',') >= 0) {
+    const splittedYears = _.map(str.split(','), _.toNumber);
+
+    return {
+      $in: splittedYears,
+    };
+  }
+
+  if (str.indexOf('s') >= 0) {
+    const year = _.chain(str)
+      .replace(/[^0-9]/g, '')
+      .toNumber()
+      .value();
+
+    const range = _.range(year, year + 10);
+
+    return {
+      $in: range,
+    };
+  }
+
+  return undefined;
+};
 
 const createFilter = ({ genres, years }) => {
   const filter = {};
@@ -15,14 +51,10 @@ const createFilter = ({ genres, years }) => {
   }
 
   if (years) {
-    const splittedYears = _.map(years.split(','), _.toNumber);
-
-    filter['released.year'] = {
-      $in: splittedYears,
-    };
+    filter['released.year'] = createYearsFilter(years);
   }
 
-  return filter;
+  return _.compactObject(filter);
 };
 
 const createSortCriteria = ({ sortBy, sortDirection }) => {

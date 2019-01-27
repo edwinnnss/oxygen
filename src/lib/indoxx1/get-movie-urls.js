@@ -4,9 +4,9 @@ const cheerio = require('cheerio');
 const utils = require('../../utils');
 
 const indoxxiUrls = [
-  'https://indoxxi.bz/films',
+  // 'https://indoxxi.bz/films',
   'https://indoxxi.bz/muvi',
-  'https://indoxxi.bz/tv',
+  // 'https://indoxxi.bz/tv',
 ];
 
 const getMovieUrls = async () => {

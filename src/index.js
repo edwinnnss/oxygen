@@ -15,4 +15,4 @@ app.use(bodyParser.json());
 
 app.use('/movie', movieRouters);
 
-app.listen(port, () => console.log(`Start application at http://localhost:${port}`));
+app.listen(port, () => console.log(`Start application at http://localhost:${port}/movie`));

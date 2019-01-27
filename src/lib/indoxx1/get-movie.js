@@ -22,7 +22,7 @@ const getMovie = slug => Bluebird.resolve()
     const movieUrl = baseUrl + slug;
     const playUrl = movieUrl + '/play';
 
-    console.log('Start extract data from', movieUrl);
+    console.log('Start extract data from', movieUrl, new Date());
     const [keyStr, response, playResponse] = await Bluebird.all([
       await getKeyStr(movieUrl),
       await utils.get(movieUrl),
