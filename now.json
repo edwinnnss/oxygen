@@ -2,9 +2,15 @@
   "version": 2,
   "name": "oxygen",
   "builds": [
-      { "src": "index.js", "use": "@now/node-server" }
+    {
+      "src": "src/index.js",
+      "use": "@now/node-server"
+    }
   ],
   "routes": [
-      { "src": "/(.*)", "dest": "index.js" }
+    {
+      "src": "/(.*)",
+      "dest": "src/index.js"
+    }
   ]
 }
