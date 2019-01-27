@@ -1,11 +1,13 @@
 ### 1. get movie list
 ##### end point: /movie
 ##### query string:
-- page
+- director
 - genres
-- years
+- page
 - sortBy
 - sortDirection
+- star
+- years
 ##### return
 ```
 [{
