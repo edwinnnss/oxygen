@@ -9,6 +9,8 @@
       "arrow-body-style": "off",
       "max-len":"off",
       "no-path-concat": "off",
-      "prefer-template":"off"
+      "prefer-template":"off",
+      "object-curly-newline": "off",
+      "dot-notation": "off"
    }
 }
