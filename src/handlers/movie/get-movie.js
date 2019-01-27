@@ -1,14 +1,7 @@
 const Bluebird = require('bluebird');
-const LRU = require('lru-cache');
 
 const Movie = require('../../database/models/movie');
-
-const { DAY } = require('../../constants');
-
-const movieCache = new LRU({
-  max: 5000,
-  maxAge: DAY,
-});
+const { movieCache } = require('../../lru-caches');
 
 module.exports = (req, res) => Bluebird.resolve()
   .then(async () => {

@@ -2,6 +2,8 @@ const _ = require('lodash');
 const Bluebird = require('bluebird');
 const Movie = require('../../database/models/movie');
 
+const { movieListCache } = require('../../lru-caches');
+
 const LIMIT = 24;
 
 _.mixin({
@@ -84,12 +86,22 @@ module.exports = (req, res) => Bluebird.resolve()
     const filter = createFilter(req.query);
     const sortCriteria = createSortCriteria(req.query);
 
-    const movies = await Movie
+    const cacheKey = JSON.stringify(filter) + JSON.stringify(sortCriteria);
+
+    let movies = movieListCache.get(cacheKey);
+
+    if (movies) {
+      return res.send(movies);
+    }
+
+    movies = await Movie
       .find(filter)
       .sort(sortCriteria)
       .skip((page - 1) * LIMIT)
       .limit(LIMIT)
       .lean();
+
+    movieListCache.set(cacheKey, movies);
 
     return res.send(movies);
   })
