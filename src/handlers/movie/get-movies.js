@@ -39,7 +39,7 @@ const createYearsFilter = (str) => {
     };
   }
 
-  return undefined;
+  return str;
 };
 
 const createFilter = ({ genres, years, director, star, search }) => {
@@ -85,7 +85,7 @@ const createSortCriteria = ({ sortBy, sortDirection }) => {
     sortCriteria['released.day'] = sortDirection || -1;
   }
 
-  sortCriteria.createdAt = -1;
+  sortCriteria.name = -1;
 
   return sortCriteria;
 };
@@ -100,6 +100,9 @@ module.exports = (req, res) => Bluebird.resolve()
 
     const filter = createFilter(req.query);
     const sortCriteria = createSortCriteria(req.query);
+
+    console.log(filter)
+    console.log(sortCriteria)
 
     const cacheKey = page + JSON.stringify(filter) + JSON.stringify(sortCriteria);
 

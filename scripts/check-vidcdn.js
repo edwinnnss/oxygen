@@ -49,7 +49,7 @@ Bluebird.resolve()
         //   results.push('https://oxygen.now.sh/movie/' + movie.slug);
         // }
 
-        const kuki = _.get(datum, 'meta.kuki');
+        const kuki = _.get(datum, 'meta.backup2');
         const metaType = _.get(datum, 'meta.type');
 
         if (kuki && !BANNED_TYPE.has(metaType)) {
