@@ -48,10 +48,14 @@ const getMovie = slug => Bluebird.resolve()
     const ratingValue = $('span[itemprop="ratingValue"]').text();
     const ratingCount = $('span[itemprop="ratingCount"]').text();
 
-    const countries = _.chain($('#mv-info > div.mvi-content > div.mvic-desc > div.mvic-info > div.mvici-right > p:nth-child(4) > a').text())
-      .split(',')
-      .map(_.trim)
-      .value();
+    const countries = [];
+    $('#mv-info > div.mvi-content > div.mvic-desc > div.mvic-info > div.mvici-right > p:nth-child(4) > a').each((index, elem) => {
+      const country = $(elem).text();
+
+      countries.push(country);
+    });
+
+    console.log(countries)
 
     const directors = _.chain($('span[itemprop="director"]').text())
       .split(',')
@@ -112,6 +116,7 @@ module.exports = getMovie;
 // Bluebird.resolve()
 //   .then(async () => {
 //     const movie = await getMovie('/movie/ip-man-2-2010-sww');
+//     // console.log(movie)
 //   })
 //   .catch(console.log)
 //   .finally(() => process.exit(3));

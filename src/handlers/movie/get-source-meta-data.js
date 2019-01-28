@@ -95,7 +95,7 @@ module.exports = (req, res) => Bluebird.resolve()
       const sourceMetaDataFromWebsite = await getSourceMetaData(movie.source, keyString, playResponse);
 
       if (sourceMetaDataFromWebsite) {
-        movie.sourceMetaData = await modifySourceMetaData(sourceMetaDataFromWebsite);
+        movie.sourceMetaData = _.compact(await modifySourceMetaData(sourceMetaDataFromWebsite));
 
         await movie.save();
       }
