@@ -62,7 +62,7 @@ const modifySourceMetaData = async sourceMetaData => Bluebird.map(sourceMetaData
   }
 
   let sourcesPatch = _.map(data.sources, renameLabel);
-  sourcesPatch = await Bluebird.map(sourcesPatch, filterResponse);
+  sourcesPatch = _.compact(await Bluebird.map(sourcesPatch, filterResponse));
 
   if (_.compact(sourcesPatch).length === 0) {
     return Bluebird.resolve();
@@ -92,14 +92,16 @@ module.exports = (req, res) => Bluebird.resolve()
         await get(playUrl),
       ]);
 
-      const sourceMetaDataFromWebsite = await getSourceMetaData(movie.source, keyString, playResponse);
+      const sourceMetaDataFromWebsite = _.compact(await getSourceMetaData(movie.source, keyString, playResponse));
 
       if (sourceMetaDataFromWebsite) {
         movie.sourceMetaData = _.compact(await modifySourceMetaData(sourceMetaDataFromWebsite));
+        console.log(movie.sourceMetaData);
 
         await movie.save();
       }
     } catch (error) {
+      console.log(error);
       console.log('Error while get source meta data from indoxx1', JSON.stringify(error, null, 2));
     }
 
