@@ -42,7 +42,7 @@ const createYearsFilter = (str) => {
   return str;
 };
 
-const createFilter = ({ genres, years, director, star, search }) => {
+const createFilter = ({ genres, years, director, star, search, country }) => {
   const filter = {};
 
   if (genres) {
@@ -62,6 +62,10 @@ const createFilter = ({ genres, years, director, star, search }) => {
 
   if (star) {
     filter['stars'] = star;
+  }
+
+  if (country) {
+    filter['countries'] = country;
   }
 
   if (search) {
