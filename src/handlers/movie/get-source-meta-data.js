@@ -20,21 +20,27 @@ const renameLabel = (source) => {
 };
 
 const filterResponse = async (source) => {
-  if (_.get(source, 'file', '').indexOf('google') === -1) {
+  if (_.get(source, 'file', '').indexOf('youtube') >= 0) {
+    source.file = source.file.replace('watch?v=', 'embed/');
+
     return source;
   }
 
-  let statusCode;
+  if (_.get(source, 'file', '').indexOf('google') >= 0) {
+    let statusCode;
 
-  try {
-    const { status } = await checkResponse(source.file);
-    statusCode = status;
-  } catch (errResponse) {
-    statusCode = errResponse.status;
-  }
+    try {
+      const { status } = await checkResponse(source.file);
+      statusCode = status;
+    } catch (errResponse) {
+      statusCode = errResponse.status;
+    }
 
-  if (statusCode < 200 || statusCode >= 300) {
-    return Bluebird.resolve();
+    if (statusCode < 200 || statusCode >= 300) {
+      return Bluebird.resolve();
+    }
+
+    return source;
   }
 
   return source;
@@ -96,7 +102,6 @@ module.exports = (req, res) => Bluebird.resolve()
 
       if (sourceMetaDataFromWebsite) {
         movie.sourceMetaData = _.compact(await modifySourceMetaData(sourceMetaDataFromWebsite));
-        console.log(movie.sourceMetaData);
 
         await movie.save();
       }

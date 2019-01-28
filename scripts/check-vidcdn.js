@@ -33,26 +33,24 @@ Bluebird.resolve()
           return Bluebird.resolve();
         }
 
-        await Bluebird.each(datum.sources, (source) => {
-          if (!_.get(source, 'file')) {
-            return Bluebird.resolve();
-          }
+        // await Bluebird.each(datum.sources, (source) => {
+        //   if (!_.get(source, 'file')) {
+        //     return Bluebird.resolve();
+        //   }
 
-          if (source.file.indexOf('youtube') >= 0) {
-            results.push('https://oxygen.now.sh/movie/' + movie.slug);
-            return Bluebird.resolve();
-          }
+        //   if (source.file.indexOf('youtube') >= 0) {
+        //     results.push('https://oxygen.now.sh/movie/' + movie.slug);
+        //     return Bluebird.resolve();
+        //   }
 
-          return Bluebird.resolve();
-        });
+        //   return Bluebird.resolve();
+        // });
 
-        // return Bluebird.resolve();
+        const metaType = _.get(datum, 'meta.type');
 
-        // const metaType = _.get(datum, 'meta.type');
-
-        // if (metaType === 'kuki') {
-        //   results.push('https://oxygen.now.sh/movie/' + movie.slug);
-        // }
+        if (metaType === 'iframe') {
+          results.push('https://oxygen.now.sh/movie/' + movie.slug + '/play');
+        }
 
         // const kuki = _.get(datum, 'meta.backup2');
         // const metaType = _.get(datum, 'meta.type');
