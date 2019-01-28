@@ -55,8 +55,6 @@ const getMovie = slug => Bluebird.resolve()
       countries.push(country);
     });
 
-    console.log(countries)
-
     const directors = _.chain($('span[itemprop="director"]').text())
       .split(',')
       .map(_.trim)
@@ -102,7 +100,7 @@ const getMovie = slug => Bluebird.resolve()
       ratingCount,
       ratingValue: (ratingValue === 'N/A') ? '0' : ratingValue,
       released,
-      slug: _.kebabCase(name + (year || '')),
+      slug: _.kebabCase(`${name}-${released.year || ''}`),
       source: movieUrl,
       sourceMetaData,
       stars,

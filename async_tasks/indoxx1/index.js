@@ -32,20 +32,20 @@ Bluebird.resolve()
       fs.writeFileSync(movieUrlPath, JSON.stringify(slugs, null, 2));
     }
 
-    await Bluebird.each(slugs, async (slug) => {
+    await Bluebird.map(slugs, async (slug) => {
       console.log(`${counter}/${slugs.length} | Extract data from ${slug}`);
       counter += 1;
 
-      const checkMovie = await Movie
-        .findOne({
-          source: `https://indoxxi.bz${slug}`,
-        })
-        .select('source')
-        .lean();
+      // const checkMovie = await Movie
+      //   .findOne({
+      //     source: `https://indoxxi.bz${slug}`,
+      //   })
+      //   .select('source')
+      //   .lean();
 
-      if (checkMovie) {
-        return;
-      }
+      // if (checkMovie) {
+      //   return;
+      // }
 
       let tryAgain = true;
 
@@ -59,10 +59,11 @@ Bluebird.resolve()
 
           tryAgain = false;
         } catch (error) {
+          console.log(error);
           console.log('Try again leh', JSON.stringify(error, null, 2));
         }
       }
-    });
+    }, { concurrency: 5 });
 
     // const movie = await getMovie('/movie/bad-genius-2017-9rmq');
     // console.log(movie);
