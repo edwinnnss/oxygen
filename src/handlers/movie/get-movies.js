@@ -47,9 +47,9 @@ const createFilter = ({ genres, years, director, star, search, country }) => {
 
   if (genres) {
     const splittedGenres = genres.split(',');
-    _.set(filter, 'genres', {
+    filter['genres.slug'] = {
       $in: splittedGenres,
-    });
+    };
   }
 
   if (years) {
@@ -57,15 +57,15 @@ const createFilter = ({ genres, years, director, star, search, country }) => {
   }
 
   if (director) {
-    filter['directors'] = director;
+    filter['directors.slug'] = director;
   }
 
   if (star) {
-    filter['stars'] = star;
+    filter['stars.slug'] = star;
   }
 
   if (country) {
-    filter['countries'] = country;
+    filter['countries.slug'] = country;
   }
 
   if (search) {

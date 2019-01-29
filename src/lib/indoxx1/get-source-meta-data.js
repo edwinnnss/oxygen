@@ -3,8 +3,7 @@ const cheerio = require('cheerio');
 const _ = require('lodash');
 const superagent = require('superagent').agent();
 
-const { checkResponse } = require('../../utils');
-
+// const { checkResponse } = require('../../utils');
 
 const decoder = require('./decoder');
 
@@ -49,22 +48,22 @@ const filterResponse = async (source) => {
     return source;
   }
 
-  if (_.get(source, 'file', '').indexOf('google') >= 0) {
-    let statusCode;
+  // if (_.get(source, 'file', '').indexOf('google') >= 0) {
+  //   let statusCode;
 
-    try {
-      const { status } = await checkResponse(source.file);
-      statusCode = status;
-    } catch (errResponse) {
-      statusCode = errResponse.status;
-    }
+  //   try {
+  //     const { status } = await checkResponse(source.file);
+  //     statusCode = status;
+  //   } catch (errResponse) {
+  //     statusCode = errResponse.status;
+  //   }
 
-    if (statusCode < 200 || statusCode >= 300) {
-      return Bluebird.resolve();
-    }
+  //   if (statusCode < 200 || statusCode >= 300) {
+  //     return Bluebird.resolve();
+  //   }
 
-    return source;
-  }
+  //   return source;
+  // }
 
   return source;
 };

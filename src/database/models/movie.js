@@ -3,11 +3,20 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const MovieSchema = new Schema({
-  countries: [String],
+  countries: [{
+    label: String,
+    slug: String,
+  }],
   coverImageUrl: String,
-  directors: [String],
+  directors: [{
+    label: String,
+    slug: String,
+  }],
   duration: String,
-  genres: [String],
+  genres: [{
+    label: String,
+    slug: String,
+  }],
   keywords: [String],
   name: String,
   posterUrl: String,
@@ -22,7 +31,10 @@ const MovieSchema = new Schema({
   slug: String,
   source: String,
   sourceMetaData: Object,
-  stars: [String],
+  stars: [{
+    label: String,
+    slug: String,
+  }],
   summary: String,
   trailerUrl: String,
 }, { timestamps: true });

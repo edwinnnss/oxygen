@@ -52,24 +52,40 @@ const getMovie = slug => Bluebird.resolve()
     $('#mv-info > div.mvi-content > div.mvic-desc > div.mvic-info > div.mvici-right > p:nth-child(4) > a').each((index, elem) => {
       const country = $(elem).text();
 
-      countries.push(country);
+      countries.push({
+        label: _.trim(country),
+        slug: _.kebabCase(country),
+      });
     });
 
     const directors = _.chain($('span[itemprop="director"]').text())
       .split(',')
-      .map(_.trim)
+      .map((v) => {
+        return {
+          label: _.trim(v),
+          slug: _.kebabCase(v),
+        };
+      })
       .value();
 
     const stars = _.chain($('span[itemprop="actor"]').text())
       .split(',')
-      .map(_.trim)
+      .map((v) => {
+        return {
+          label: _.trim(v),
+          slug: _.kebabCase(v),
+        };
+      })
       .value();
 
     const genres = [];
     $('#mv-info > div.mvi-content > div.mvic-desc > div.mvic-info > div.mvici-left > p:nth-child(1) a').each((index, elem) => {
       const genre = $(elem).text();
 
-      genres.push(genre);
+      genres.push({
+        label: _.trim(genre),
+        slug: _.kebabCase(genre),
+      });
     });
 
     const keywords = [];
@@ -111,10 +127,10 @@ const getMovie = slug => Bluebird.resolve()
 
 module.exports = getMovie;
 
-// Bluebird.resolve()
-//   .then(async () => {
-//     const movie = await getMovie('/movie/ip-man-2-2010-sww');
-//     // console.log(movie)
-//   })
-//   .catch(console.log)
-//   .finally(() => process.exit(3));
+Bluebird.resolve()
+  .then(async () => {
+    const movie = await getMovie('/movie/ip-man-2-2010-sww');
+    console.log(movie)
+  })
+  .catch(console.log)
+  .finally(() => process.exit(3));
