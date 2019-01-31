@@ -54,30 +54,41 @@ const filterOffLabel = (sub) => {
   return sub;
 };
 
-const modifySourceMetaData = async sourceMetaData => Bluebird.map(sourceMetaData, async (data) => {
-  if (_.isArray(data)) {
-    return _.chain(data)
-      .map(filterOffLabel)
-      .compact()
-      .value();
-  }
+const modifySourceMetaData = async (sourceMetaData) => {
+  const storeMetaIds = [];
 
-  const metaType = _.get(data, 'meta.type');
-  if (BANNED_TYPE.has(metaType)) {
-    return Bluebird.resolve();
-  }
+  return Bluebird.map(sourceMetaData, async (data) => {
+    if (_.isArray(data)) {
+      return _.chain(data)
+        .map(filterOffLabel)
+        .compact()
+        .value();
+    }
 
-  let sourcesPatch = _.map(data.sources, renameLabel);
-  sourcesPatch = _.compact(await Bluebird.map(sourcesPatch, filterResponse));
+    const metaType = _.get(data, 'meta.type');
+    if (BANNED_TYPE.has(metaType)) {
+      return Bluebird.resolve();
+    }
 
-  if (_.compact(sourcesPatch).length === 0) {
-    return Bluebird.resolve();
-  }
+    // remove duplicate sourceMeta based on metaId
+    const metaId = _.get(data, 'meta.id');
+    if (metaId) {
+      if (_.includes(storeMetaIds, metaId)) return Bluebird.resolve();
+      storeMetaIds.push(metaId);
+    }
 
-  data.sources = sourcesPatch;
+    let sourcesPatch = _.map(data.sources, renameLabel);
+    sourcesPatch = _.compact(await Bluebird.map(sourcesPatch, filterResponse));
 
-  return data;
-});
+    if (_.compact(sourcesPatch).length === 0) {
+      return Bluebird.resolve();
+    }
+
+    data.sources = sourcesPatch;
+
+    return data;
+  });
+};
 
 module.exports = (req, res) => Bluebird.resolve()
   .then(async () => {
