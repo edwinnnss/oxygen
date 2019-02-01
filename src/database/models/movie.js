@@ -39,4 +39,8 @@ const MovieSchema = new Schema({
   trailerUrl: String,
 }, { timestamps: true });
 
+MovieSchema.index({ 'slug': 1 });
+MovieSchema.index({ 'name': 1 });
+MovieSchema.index({ 'released.year': 1, 'released.month': 1, 'released.day': 1 });
+
 module.exports = mongoose.model('Movie', MovieSchema);

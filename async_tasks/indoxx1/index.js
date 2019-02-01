@@ -63,7 +63,7 @@ Bluebird.resolve()
           console.log('Try again leh', JSON.stringify(error, null, 2));
         }
       }
-    }, { concurrency: 5 });
+    }, { concurrency: 10 });
 
     // const movie = await getMovie('/movie/bad-genius-2017-9rmq');
     // console.log(movie);

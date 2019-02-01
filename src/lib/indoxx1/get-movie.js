@@ -127,10 +127,10 @@ const getMovie = slug => Bluebird.resolve()
 
 module.exports = getMovie;
 
-Bluebird.resolve()
-  .then(async () => {
-    const movie = await getMovie('/movie/ip-man-2-2010-sww');
-    console.log(movie)
-  })
-  .catch(console.log)
-  .finally(() => process.exit(3));
+// Bluebird.resolve()
+//   .then(async () => {
+//     const movie = await getMovie('/movie/ip-man-2-2010-sww');
+//     console.log(movie)
+//   })
+//   .catch(console.log)
+//   .finally(() => process.exit(3));
