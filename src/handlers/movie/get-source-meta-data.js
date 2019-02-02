@@ -28,15 +28,22 @@ const filterResponse = async (source) => {
 
   if (_.get(source, 'file', '').indexOf('google') >= 0) {
     let statusCode;
+    let contentType;
 
     try {
-      const { status } = await checkResponse(source.file);
-      statusCode = status;
+      const response = await checkResponse(source.file);
+
+      contentType = _.get(response, 'header.[content-type]');
+      statusCode = response.status;
     } catch (errResponse) {
       statusCode = errResponse.status;
     }
 
     if (statusCode < 200 || statusCode >= 300) {
+      return Bluebird.resolve();
+    }
+
+    if (contentType !== 'video/mp4') {
       return Bluebird.resolve();
     }
 
