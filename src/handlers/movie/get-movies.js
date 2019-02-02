@@ -4,7 +4,7 @@ const Movie = require('../../database/models/movie');
 
 const { moviesCache } = require('../../lru-caches');
 
-const LIMIT = 24;
+const MAX_LIMIT = 24;
 
 _.mixin({
   compactObject: (o) => {
@@ -94,18 +94,32 @@ const createSortCriteria = ({ sortBy, sortDirection }) => {
   return sortCriteria;
 };
 
+const getNumber = (rawNum, defaultNumber) => {
+  if (!rawNum) {
+    return defaultNumber;
+  }
+
+  const number = _.toNumber(rawNum);
+
+  if (_.isNaN(number)) {
+    return defaultNumber;
+  }
+
+  return number;
+};
+
 module.exports = (req, res) => Bluebird.resolve()
   .then(async () => {
-    let { page } = req.query;
-
-    if (!page) {
-      page = 1;
-    }
-
+    let limit = getNumber(req.query.limit, MAX_LIMIT);
+    const page = getNumber(req.query.page, 1);
     const filter = createFilter(req.query);
     const sortCriteria = createSortCriteria(req.query);
 
-    const cacheKey = page + JSON.stringify(filter) + JSON.stringify(sortCriteria);
+    if (limit >= MAX_LIMIT) {
+      limit = MAX_LIMIT;
+    }
+
+    const cacheKey = page + limit + JSON.stringify(filter) + JSON.stringify(sortCriteria);
 
     let movies = moviesCache.get(cacheKey);
 
@@ -117,8 +131,8 @@ module.exports = (req, res) => Bluebird.resolve()
       .find(filter)
       .select('countries coverImageUrl directors duration genres name posterUrl quality ratingCount ratingValue released slug stars')
       .sort(sortCriteria)
-      .skip((page - 1) * LIMIT)
-      .limit(LIMIT)
+      .skip((page - 1) * limit)
+      .limit(limit)
       .lean();
 
     moviesCache.set(cacheKey, movies);
