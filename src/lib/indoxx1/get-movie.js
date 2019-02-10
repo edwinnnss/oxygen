@@ -17,7 +17,7 @@ const getValueBetweenBracket = (str) => {
   return str.slice(firstBracket + 1, lastBracket);
 };
 
-const getMovie = slug => Bluebird.resolve()
+const getMovie = (slug, movieType) => Bluebird.resolve()
   .then(async () => {
     const movieUrl = baseUrl + slug;
     const playUrl = movieUrl + '/play';
@@ -29,7 +29,7 @@ const getMovie = slug => Bluebird.resolve()
       await utils.get(playUrl),
     ]);
 
-    if (response.status === 404) {
+    if (response.status >= 300 || response.status < 200) {
       return undefined;
     }
 
@@ -122,6 +122,7 @@ const getMovie = slug => Bluebird.resolve()
       stars,
       summary,
       trailerUrl,
+      type: movieType,
     };
   });
 
@@ -129,8 +130,8 @@ module.exports = getMovie;
 
 // Bluebird.resolve()
 //   .then(async () => {
-//     const movie = await getMovie('/movie/ip-man-2-2010-sww');
-//     console.log(movie)
+//     const movie = await getMovie('/film-seri/crashing-season-3-2019-1h5us3');
+//     console.log(JSON.stringify(movie, null, 2));
 //   })
 //   .catch(console.log)
 //   .finally(() => process.exit(3));

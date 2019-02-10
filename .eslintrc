@@ -11,6 +11,7 @@
       "no-path-concat": "off",
       "prefer-template":"off",
       "object-curly-newline": "off",
-      "dot-notation": "off"
+      "dot-notation": "off",
+      "linebreak-style": "off"
    }
 }

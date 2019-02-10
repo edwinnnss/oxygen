@@ -7,6 +7,7 @@ const MovieSchema = new Schema({
     label: String,
     slug: String,
   }],
+  type: String,
   coverImageUrl: String,
   directors: [{
     label: String,
