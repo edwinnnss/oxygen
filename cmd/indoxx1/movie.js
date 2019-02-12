@@ -21,6 +21,7 @@ module.exports = movieType => Bluebird.resolve()
 
     await utils.get('https://indoxxi.bz');
 
+    const problematicUrls = [];
     const movieUrlPath = `tmp/tmdb-${movieType}-urls.json`;
 
     if (fs.existsSync(movieUrlPath)) {
@@ -35,7 +36,7 @@ module.exports = movieType => Bluebird.resolve()
       console.log(`${counter}/${slugs.length} | Extract data from ${slug}`);
       counter += 1;
 
-      let tryAgain = true;
+      let tryAgain = 5;
 
       while (tryAgain) {
         try {
@@ -45,13 +46,18 @@ module.exports = movieType => Bluebird.resolve()
             await movieQuery.upsert(movie);
           }
 
-          tryAgain = false;
+          tryAgain = 0;
         } catch (error) {
-          console.log(error);
-          console.log('Try again leh', JSON.stringify(error, null, 2));
+          tryAgain -= 1;
+
+          if (!tryAgain) {
+            problematicUrls.push(slug);
+          }
+
+          console.log(`[${tryAgain}/5] Try again with error ${JSON.stringify(error, null, 2)}`);
         }
       }
-    }, { concurrency: 5 });
-  })
-  .catch(console.log)
-  .finally(() => process.exit(3));
+    }, { concurrency: 10 });
+
+    fs.writeFileSync(`problematicUrls-${movieType}.json`, JSON.stringify(problematicUrls, null, 2));
+  });
