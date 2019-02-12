@@ -42,7 +42,7 @@ const createYearsFilter = (str) => {
   return str;
 };
 
-const createFilter = ({ genres, years, director, star, search, country }) => {
+const createFilter = ({ genres, years, director, star, search, country, type }) => {
   const filter = {};
 
   if (genres) {
@@ -73,6 +73,10 @@ const createFilter = ({ genres, years, director, star, search, country }) => {
       $regex: search,
       $options: 'i',
     };
+  }
+
+  if (type) {
+    filter['type'] = type || 'movie';
   }
 
   return _.compactObject(filter);
