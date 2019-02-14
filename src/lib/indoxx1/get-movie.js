@@ -5,24 +5,24 @@ const _ = require('lodash');
 const cheerio = require('cheerio');
 
 const getSourceMetaData = require('./get-source-meta-data');
+const getSeriesSourceMetaData = require('./get-series-source-meta-data');
 const utils = require('../../utils');
 const getKeyStr = require('./get-key-string');
+const { getValueBetweenBracket } = require('./utils');
 
 const baseUrl = 'https://indoxxi.bz';
-
-const getValueBetweenBracket = (str) => {
-  const firstBracket = _.indexOf(str, '(');
-  const lastBracket = _.indexOf(str, ')');
-
-  return str.slice(firstBracket + 1, lastBracket);
-};
 
 const getMovie = (slug, movieType) => Bluebird.resolve()
   .then(async () => {
     const movieUrl = baseUrl + slug;
-    const playUrl = movieUrl + '/play';
 
-    console.log('Start extract data from', movieUrl, new Date());
+    let playUrl = movieUrl + '/play';
+
+    if (movieType === 'film-series') {
+      playUrl = movieUrl + '/playtv';
+    }
+
+    console.log('Start extract data from', playUrl, new Date());
     const [keyStr, response, playResponse] = await Bluebird.all([
       await getKeyStr(movieUrl),
       await utils.get(movieUrl),
@@ -33,8 +33,12 @@ const getMovie = (slug, movieType) => Bluebird.resolve()
       return undefined;
     }
 
-    const sourceMetaData = await getSourceMetaData(movieUrl, keyStr, playResponse);
-    // const response = await utils.get(movieUrl);
+    let sourceMetaData;
+    if (movieType === 'film-series') {
+      sourceMetaData = await getSeriesSourceMetaData(playUrl, keyStr, playResponse);
+    } else {
+      sourceMetaData = await getSourceMetaData(movieUrl, keyStr, playResponse);
+    }
 
     const $ = cheerio.load(response.text);
     const posterUrl = getValueBetweenBracket($('div.mvic-thumb').attr('style'));
@@ -127,11 +131,3 @@ const getMovie = (slug, movieType) => Bluebird.resolve()
   });
 
 module.exports = getMovie;
-
-// Bluebird.resolve()
-//   .then(async () => {
-//     const movie = await getMovie('/film-seri/crashing-season-3-2019-1h5us3');
-//     console.log(JSON.stringify(movie, null, 2));
-//   })
-//   .catch(console.log)
-//   .finally(() => process.exit(3));

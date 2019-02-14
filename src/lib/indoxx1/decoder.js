@@ -33,7 +33,6 @@ function btoa(str) {
   return Buffer.from(str).toString('base64');
 }
 
-/* eslint-enable */
 exports.decode = (_keyStr, e) => {
   const t = (e = Base64.decode(_keyStr, e)).lastIndexOf(']');
 
@@ -52,4 +51,31 @@ exports.getTokenUrl = (cookieName, dataTmbd, ts2) => {
   const k = crc32(btoa(t + dataTmbd) + t + dataTmbd + crc32(dataTmbd + t));
 
   return `https://${possibleDomain[random]}.akubebas.com/?token=${ts}&k=${k}&v=static7.js`;
+};
+
+function calcTime(e) {
+  var t = new Date,
+      i = t.getTime() + 6e4 * t.getTimezoneOffset();
+  return new Date(i + 252e5)
+}
+
+const createTs2 = (tsDiv) => {
+  const p = calcTime();
+  let m = p.getMinutes()
+  m %= tsDiv;
+  var h = 1e3 * p.getSeconds(),
+        g = new Date(p - 6e4 * m - h);
+
+  return Math.floor(g.getTime() / 1e3);
+}
+
+exports.getFilmSeriesTokenUrl = (cookieName, tsDiv, dataTmbd, episode) => {
+  const random = _.random(2);
+  const possibleDomain = ['playtv', 'playtv2', 'playtv3'];
+  const ts2 = createTs2(tsDiv);
+  let f = getTS(cookieName, ts2);
+  f = f.substr(0, f.length - 1);
+  const b = crc32(btoa(ts2 + dataTmbd) + ts2 + dataTmbd + crc32(dataTmbd + ts2));
+
+  return `https://${possibleDomain[random]}.akubebas.com/?sv=1&ep=${episode}&no=${episode}-${episode}&token=${f}&k=${b}`;
 };

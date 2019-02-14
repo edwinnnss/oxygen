@@ -1,7 +1,7 @@
 node_modules
 .env
 tmp/*
-test.js
+test*
 backup/*
 *.sh
 problematicUrls*
