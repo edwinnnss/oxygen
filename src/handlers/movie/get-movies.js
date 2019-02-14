@@ -75,9 +75,7 @@ const createFilter = ({ genres, years, director, star, search, country, type }) 
     };
   }
 
-  if (type) {
-    filter['type'] = type || 'movie';
-  }
+  filter['type'] = type || 'movie';
 
   return _.compactObject(filter);
 };
@@ -130,6 +128,8 @@ module.exports = (req, res) => Bluebird.resolve()
     if (movies) {
       return res.send(movies);
     }
+
+    console.log(filter)
 
     movies = await Movie
       .find(filter)
