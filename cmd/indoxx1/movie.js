@@ -57,7 +57,7 @@ module.exports = movieType => Bluebird.resolve()
           console.log(`[${tryAgain}/5] Try again with error ${JSON.stringify(error, null, 2)}`);
         }
       }
-    }, { concurrency: 10 });
+    }, { concurrency: 5 });
 
     fs.writeFileSync(`problematicUrls-${movieType}.json`, JSON.stringify(problematicUrls, null, 2));
   });

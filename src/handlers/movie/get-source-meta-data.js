@@ -5,6 +5,7 @@ const Movie = require('../../database/models/movie');
 
 const getKeyString = require('../../lib/indoxx1/get-key-string');
 const getSourceMetaData = require('../../lib/indoxx1/get-source-meta-data');
+const getSeriesSourceMetaData = require('../../lib/indoxx1/get-series-source-meta-data');
 const { get, checkResponse } = require('../../utils');
 
 const BANNED_TYPE = new Set(['drives_muvi', 'drives_lk21', 'drives']);
@@ -61,67 +62,91 @@ const filterOffLabel = (sub) => {
   return sub;
 };
 
-const modifySourceMetaData = async (sourceMetaData) => {
-  const storeMetaIds = [];
+const modifySourceMetaData = sourceMetaData => Bluebird.resolve()
+  .then(async () => {
+    const storeMetaIds = [];
 
-  return Bluebird.map(sourceMetaData, async (data) => {
-    if (_.isArray(data)) {
-      return _.chain(data)
-        .map(filterOffLabel)
-        .compact()
-        .value();
-    }
+    return Bluebird.map(sourceMetaData, async (data) => {
+      if (_.isArray(data)) {
+        return _.chain(data)
+          .map(filterOffLabel)
+          .compact()
+          .value();
+      }
 
-    const metaType = _.get(data, 'meta.type');
-    if (BANNED_TYPE.has(metaType)) {
-      return Bluebird.resolve();
-    }
+      const metaType = _.get(data, 'meta.type');
+      if (BANNED_TYPE.has(metaType)) {
+        return Bluebird.resolve();
+      }
 
-    // remove duplicate sourceMeta based on metaId
-    const metaId = _.get(data, 'meta.id');
-    if (metaId) {
-      if (_.includes(storeMetaIds, metaId)) return Bluebird.resolve();
-      storeMetaIds.push(metaId);
-    }
+      // remove duplicate sourceMeta based on metaId
+      const metaId = _.get(data, 'meta.id');
+      if (metaId) {
+        if (_.includes(storeMetaIds, metaId)) return Bluebird.resolve();
+        storeMetaIds.push(metaId);
+      }
 
-    let sourcesPatch = _.map(data.sources, renameLabel);
-    sourcesPatch = _.compact(await Bluebird.map(sourcesPatch, filterResponse));
+      let sourcesPatch = _.map(data.sources, renameLabel);
+      sourcesPatch = _.compact(await Bluebird.map(sourcesPatch, filterResponse));
 
-    if (_.compact(sourcesPatch).length === 0) {
-      return Bluebird.resolve();
-    }
+      if (_.compact(sourcesPatch).length === 0) {
+        return Bluebird.resolve();
+      }
 
-    data.sources = sourcesPatch;
+      data.sources = sourcesPatch;
 
-    return data;
+      return data;
+    });
   });
-};
 
 module.exports = (req, res) => Bluebird.resolve()
   .then(async () => {
     const { slug } = req.params;
     const movie = await Movie
       .findOne({ slug })
-      .select('name sourceMetaData source');
+      .select('name sourceMetaData source type');
 
     if (!movie) {
       return res.send(null);
     }
 
     try {
-      const playUrl = movie.source + '/play';
+      let playUrl = movie.source + '/play';
+
+      if (movie.type === 'film-series') {
+        playUrl = movie.source + '/playtv';
+      }
 
       const [keyString, playResponse] = await Bluebird.all([
         await getKeyString(movie.source),
         await get(playUrl),
       ]);
 
-      const sourceMetaDataFromWebsite = _.compact(await getSourceMetaData(movie.source, keyString, playResponse));
+      let sourceMetaDataFromWebsite;
+      if (movie.type === 'film-series') {
+        sourceMetaDataFromWebsite = await getSeriesSourceMetaData(playUrl, keyString, playResponse);
+      } else {
+        sourceMetaDataFromWebsite = await getSourceMetaData(movie.source, keyString, playResponse);
+      }
 
-      if (sourceMetaDataFromWebsite) {
+      if (sourceMetaDataFromWebsite && movie.type !== 'film-series') {
         movie.sourceMetaData = _.compact(await modifySourceMetaData(sourceMetaDataFromWebsite));
 
         await movie.save();
+      } else if (sourceMetaDataFromWebsite && movie.type === 'film-series') {        
+        const tasks = [];
+
+        _.forEach(sourceMetaDataFromWebsite, (data) => {
+          _.mapValues(data, (v, k) => {
+            tasks.push({
+              [k]: modifySourceMetaData(v),
+            });
+          });
+        });
+
+        movie.sourceMetaData = await Bluebird.map(tasks, task => Bluebird.props(task));
+
+        // await movie.save();
       }
     } catch (error) {
       console.log(error);

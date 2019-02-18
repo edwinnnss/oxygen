@@ -131,3 +131,11 @@ const getMovie = (slug, movieType) => Bluebird.resolve()
   });
 
 module.exports = getMovie;
+
+// Bluebird.resolve()
+//   .then(async () => {
+//     const movie = await getMovie('/film-seri/weird-city-season-1-2019-1q3ns1', 'film-series');
+//     console.log(JSON.stringify(movie, null, 2))
+//   })
+//   .catch(console.log)
+//   .finally(() => process.exit(3));

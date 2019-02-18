@@ -47,7 +47,7 @@ const getSeriesSourceMetaData = async (movieUrl, keyStr, playResponse) => {
     seriesSourceMetaData.push({ [episode]: sourceMetaData });
   });
 
-  return seriesSourceMetaData;
+  return _.compact(seriesSourceMetaData);
 };
 
 module.exports = getSeriesSourceMetaData;
