@@ -144,9 +144,24 @@ module.exports = (req, res) => Bluebird.resolve()
           });
         });
 
-        movie.sourceMetaData = await Bluebird.map(tasks, task => Bluebird.props(task));
+        const sourceMetaData = await Bluebird.map(tasks, task => Bluebird.props(task));
 
-        // await movie.save();
+        const sorted = sourceMetaData.sort((a, b) => {
+          const keyA = _.chain(a).keys().head().toNumber()
+            .value();
+          const keyB = _.chain(b).keys().head().toNumber()
+            .value();
+
+          if (keyA < keyB) {
+            return -1;
+          }
+
+          return 1;
+        });
+
+        movie.sourceMetaData = sorted;
+
+        await movie.save();
       }
     } catch (error) {
       console.log(error);

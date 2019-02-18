@@ -26,7 +26,7 @@ const getSeriesSourceMetaData = async (movieUrl, keyStr, playResponse) => {
 
   const seriesSourceMetaData = [];
 
-  await Bluebird.each(_.range(1, totalEpisodes + 1), async (episode) => {
+  await Bluebird.map(_.range(1, totalEpisodes + 1), async (episode) => {
     const tokenUrl = decoder.getFilmSeriesTokenUrl(cookieName, tsDiv, tmdbId, episode);
 
     console.log('Request token to', tokenUrl);
