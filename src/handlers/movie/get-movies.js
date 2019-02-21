@@ -131,7 +131,7 @@ module.exports = (req, res) => Bluebird.resolve()
 
     movies = await Movie
       .find(filter)
-      .select('countries coverImageUrl directors duration genres name posterUrl quality ratingCount ratingValue released slug stars')
+      .select('countries coverImageUrl directors duration genres name posterUrl quality ratingCount ratingValue released slug stars type')
       .sort(sortCriteria)
       .skip((page - 1) * limit)
       .limit(limit)
