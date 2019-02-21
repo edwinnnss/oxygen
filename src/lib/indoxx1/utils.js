@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const Bluebird = require('bluebird');
 
+const { checkResponse } = require('../../utils');
+
 const BANNED_TYPE = new Set(['drives_muvi', 'drives_lk21', 'drives']);
 
 const renameLabel = (source) => {
@@ -16,6 +18,30 @@ const renameLabel = (source) => {
 const filterResponse = async (source) => {
   if (_.get(source, 'file', '').indexOf('youtube') >= 0) {
     source.file = source.file.replace('watch?v=', 'embed/');
+
+    return source;
+  }
+
+  if (_.get(source, 'file', '').indexOf('google') >= 0) {
+    let statusCode;
+    let contentType;
+
+    try {
+      const response = await checkResponse(source.file);
+
+      contentType = _.get(response, 'header.[content-type]');
+      statusCode = response.status;
+    } catch (errResponse) {
+      statusCode = errResponse.status;
+    }
+
+    if (statusCode < 200 || statusCode >= 300) {
+      return Bluebird.resolve();
+    }
+
+    if (contentType !== 'video/mp4') {
+      return Bluebird.resolve();
+    }
 
     return source;
   }
@@ -42,6 +68,10 @@ exports.getVariableValue = (responseText, keyword, endChar) => {
     const indexChar = responseText[index];
     if (indexChar !== endChar) {
       value += indexChar;
+
+      if (indexChar === '\\') {
+        index += 1;
+      }
       index += 1;
     } else {
       next = false;
@@ -51,35 +81,42 @@ exports.getVariableValue = (responseText, keyword, endChar) => {
   return value;
 };
 
-exports.modifySourceMetaData = async sourceMetaData => Bluebird.map(sourceMetaData, async (data) => {
-  if (!data) {
-    return data;
-  }
+exports.modifySourceMetaData = sourceMetaData => Bluebird.resolve()
+  .then(async () => {
+    const storeMetaIds = [];
 
-  if (_.isArray(data)) {
-    return _.chain(data)
-      .map(filterOffLabel)
-      .compact()
-      .value();
-  }
+    return Bluebird.map(sourceMetaData, async (data) => {
+      if (_.isArray(data)) {
+        return _.chain(data)
+          .map(filterOffLabel)
+          .compact()
+          .value();
+      }
 
-  const metaType = _.get(data, 'meta.type');
-  if (BANNED_TYPE.has(metaType)) {
-    return Bluebird.resolve();
-  }
+      const metaType = _.get(data, 'meta.type');
+      if (BANNED_TYPE.has(metaType)) {
+        return Bluebird.resolve();
+      }
 
-  let sourcesPatch = _.map(data.sources, renameLabel);
-  sourcesPatch = _.compact(await Bluebird.map(sourcesPatch, filterResponse));
+      // remove duplicate sourceMeta based on metaId
+      const metaId = _.get(data, 'meta.id');
+      if (metaId) {
+        if (_.includes(storeMetaIds, metaId)) return Bluebird.resolve();
+        storeMetaIds.push(metaId);
+      }
 
-  if (_.compact(sourcesPatch).length === 0) {
-    return Bluebird.resolve();
-  }
+      let sourcesPatch = _.map(data.sources, renameLabel);
+      sourcesPatch = _.compact(await Bluebird.map(sourcesPatch, filterResponse));
 
-  data.sources = sourcesPatch;
+      if (_.compact(sourcesPatch).length === 0) {
+        return Bluebird.resolve();
+      }
 
-  return data;
-})
-  .then(_.compact);
+      data.sources = sourcesPatch;
+
+      return data;
+    });
+  });
 
 exports.getValueBetweenBracket = (str) => {
   const firstBracket = _.indexOf(str, '(');
