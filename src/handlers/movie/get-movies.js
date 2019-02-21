@@ -75,7 +75,7 @@ const createFilter = ({ genres, years, director, star, search, country, type }) 
     };
   }
 
-  filter['type'] = type || 'movie';
+  filter['type'] = type;
 
   return _.compactObject(filter);
 };
