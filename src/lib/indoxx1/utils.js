@@ -86,6 +86,10 @@ exports.modifySourceMetaData = sourceMetaData => Bluebird.resolve()
     const storeMetaIds = [];
 
     return Bluebird.map(sourceMetaData, async (data) => {
+      if (!data) {
+        return Bluebird.resolve();
+      }
+
       if (_.isArray(data)) {
         return _.chain(data)
           .map(filterOffLabel)
