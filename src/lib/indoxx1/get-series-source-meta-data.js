@@ -20,7 +20,7 @@ const getTotalEpisodes = (playResponse) => {
     const episode = $(elem).attr('id').split('-')[1];
     const title = $(elem).attr('title');
 
-    episodes.push(`${episode} | ${title}`);
+    episodes.push(`${index + 1} | ${episode} | ${title}`);
   });
 
   return episodes;
@@ -77,8 +77,8 @@ const getSeriesSourceMetaData = async (movieUrl, keyStr, playResponse) => {
   const seriesSourceMetaData = [];
 
   await Bluebird.map(episodes, async (rawEpisode) => {
-    const [episode, title] = rawEpisode.split(' | ');
-    const tokenUrl = decoder.getFilmSeriesTokenUrl(cookieName, tsDiv, tmdbId, episode);
+    const [index, episode, title] = rawEpisode.split(' | ');
+    const tokenUrl = decoder.getFilmSeriesTokenUrl(cookieName, tsDiv, tmdbId, episode, title, index);
 
     console.log('Request token to', tokenUrl);
     const encoded = await request.get(tokenUrl)
@@ -95,7 +95,7 @@ const getSeriesSourceMetaData = async (movieUrl, keyStr, playResponse) => {
 
     const sourceMetaData = _.compact(await modifySourceMetaData(JSON.parse(encodedText)));
 
-    seriesSourceMetaData.push({ [rawEpisode]: sourceMetaData });
+    seriesSourceMetaData.push({ [`${index} | ${title}`]: sourceMetaData });
   }, { concurrency: 5 });
 
   return _.compact(await sortEpisodes(seriesSourceMetaData));

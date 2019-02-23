@@ -134,7 +134,7 @@ module.exports = getMovie;
 
 // Bluebird.resolve()
 //   .then(async () => {
-//     const movie = await getMovie('/film-seri/weird-city-season-1-2019-1q3ns1', 'film-series');
+//     const movie = await getMovie('/film-seri/cheers-season-6-1987-3xs6', 'film-series');
 //     console.log(JSON.stringify(movie, null, 2))
 //   })
 //   .catch(console.log)
