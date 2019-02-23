@@ -5,16 +5,17 @@ const Movie = require('../../database/models/movie');
 
 const getKeyString = require('../../lib/indoxx1/get-key-string');
 const getSourceMetaData = require('../../lib/indoxx1/get-source-meta-data');
-const getSeriesSourceMetaData = require('../../lib/indoxx1/get-series-source-meta-data');
-const { get } = require('../../utils');
-const indoXx1Utils = require('../../lib/indoxx1/utils');
+const getSeriesEpisodeMetaData = require('../../lib/indoxx1/get-series-episode-meta-data');
+const getSeriesEpisodes = require('../../lib/indoxx1/get-series-episodes');
+const { get, getNumber } = require('../../utils');
 
 module.exports = (req, res) => Bluebird.resolve()
   .then(async () => {
     const { slug } = req.params;
+    const index = getNumber(req.query.index, 1);
     const movie = await Movie
       .findOne({ slug })
-      .select('name sourceMetaData source type');
+      .select('name sourceMetaData source type episodes');
 
     if (!movie) {
       return res.send(null);
@@ -32,44 +33,13 @@ module.exports = (req, res) => Bluebird.resolve()
         await get(playUrl),
       ]);
 
-      let sourceMetaDataFromWebsite;
       if (movie.type === 'film-series') {
-        sourceMetaDataFromWebsite = await getSeriesSourceMetaData(playUrl, keyString, playResponse);
-      } else {
-        sourceMetaDataFromWebsite = await getSourceMetaData(movie.source, keyString, playResponse);
-      }
+        movie.episodes = await getSeriesEpisodeMetaData(playUrl, keyString, playResponse, movie.episodes, index);
 
-      if (sourceMetaDataFromWebsite && movie.type !== 'film-series') {
-        movie.sourceMetaData = _.compact(await indoXx1Utils.modifySourceMetaData(sourceMetaDataFromWebsite));
-
+        await movie.markModified('episodes');
         await movie.save();
-      } else if (sourceMetaDataFromWebsite && movie.type === 'film-series') {
-        const tasks = [];
-
-        _.forEach(sourceMetaDataFromWebsite, (data) => {
-          _.mapValues(data, (v, k) => {
-            tasks.push({
-              [k]: indoXx1Utils.modifySourceMetaData(v),
-            });
-          });
-        });
-
-        const sourceMetaData = await Bluebird.map(tasks, task => Bluebird.props(task));
-
-        const sorted = sourceMetaData.sort((a, b) => {
-          const keyA = _.chain(a).keys().head().toNumber()
-            .value();
-          const keyB = _.chain(b).keys().head().toNumber()
-            .value();
-
-          if (keyA < keyB) {
-            return -1;
-          }
-
-          return 1;
-        });
-
-        movie.sourceMetaData = sorted;
+      } else {
+        movie.sourceMetaData = await getSourceMetaData(movie.source, keyString, playResponse);
 
         await movie.save();
       }

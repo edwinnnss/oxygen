@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const Bluebird = require('bluebird');
 const superagent = require('superagent').agent();
 
@@ -80,4 +81,36 @@ exports.isAlphaNumeric = (str) => {
     }
   }
   return true;
+};
+
+exports.retry = (task, credit = 5) => Bluebird.resolve()
+  .then(async () => {
+    return task();
+  })
+  .catch(async (error) => {
+    if (!credit) {
+      console.log('Credit exceeded !');
+      return Bluebird.reject(error);
+    }
+
+    credit -= 1;
+
+    console.log(`Exception occurred will wait for 5 seconds, ${JSON.stringify(error, null, 2)}`);
+    await Bluebird.delay(5000);
+
+    return exports.retry(task, credit);
+  });
+
+exports.getNumber = (rawNum, defaultNumber) => {
+  if (!rawNum) {
+    return defaultNumber;
+  }
+
+  const number = _.toNumber(rawNum);
+
+  if (_.isNaN(number)) {
+    return defaultNumber;
+  }
+
+  return number;
 };

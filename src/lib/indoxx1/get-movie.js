@@ -5,7 +5,8 @@ const _ = require('lodash');
 const cheerio = require('cheerio');
 
 const getSourceMetaData = require('./get-source-meta-data');
-const getSeriesSourceMetaData = require('./get-series-source-meta-data');
+const getSeriesEpisodesMetaData = require('./get-series-episodes-meta-data');
+const getSeriesEpisodes = require('./get-series-episodes');
 const utils = require('../../utils');
 const getKeyStr = require('./get-key-string');
 const { getValueBetweenBracket } = require('./utils');
@@ -34,10 +35,12 @@ const getMovie = (slug, movieType) => Bluebird.resolve()
     }
 
     let sourceMetaData;
+    let episodes;
     if (movieType === 'film-series') {
-      sourceMetaData = await getSeriesSourceMetaData(playUrl, keyStr, playResponse);
+      // episodes = await getSeriesEpisodesMetaData(playUrl, keyStr, playResponse);
+      episodes = await getSeriesEpisodes(playResponse);
     } else {
-      sourceMetaData = await getSourceMetaData(movieUrl, keyStr, playResponse);
+      sourceMetaData = await getSourceMetaData(playUrl, keyStr, playResponse);
     }
 
     const $ = cheerio.load(response.text);
@@ -112,6 +115,7 @@ const getMovie = (slug, movieType) => Bluebird.resolve()
       coverImageUrl,
       directors,
       duration,
+      episodes,
       genres,
       keywords,
       name,
@@ -135,7 +139,7 @@ module.exports = getMovie;
 // Bluebird.resolve()
 //   .then(async () => {
 //     const movie = await getMovie('/film-seri/cheers-season-6-1987-3xs6', 'film-series');
-//     console.log(JSON.stringify(movie, null, 2))
+//     console.log(JSON.stringify(movie.episodes, null, 2));
 //   })
 //   .catch(console.log)
 //   .finally(() => process.exit(3));

@@ -38,6 +38,7 @@ const MovieSchema = new Schema({
   }],
   summary: String,
   trailerUrl: String,
+  episodes: Object, // { index: Number, episode: Number, title: String, sourceMetaData: Object }
 }, { timestamps: true });
 
 MovieSchema.index({ 'slug': 1 });

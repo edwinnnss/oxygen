@@ -3,6 +3,7 @@ const Bluebird = require('bluebird');
 const Movie = require('../../database/models/movie');
 
 const { moviesCache } = require('../../lru-caches');
+const { getNumber } = require('../../utils');
 
 const MAX_LIMIT = 24;
 
@@ -94,20 +95,6 @@ const createSortCriteria = ({ sortBy, sortDirection }) => {
   sortCriteria.name = -1;
 
   return sortCriteria;
-};
-
-const getNumber = (rawNum, defaultNumber) => {
-  if (!rawNum) {
-    return defaultNumber;
-  }
-
-  const number = _.toNumber(rawNum);
-
-  if (_.isNaN(number)) {
-    return defaultNumber;
-  }
-
-  return number;
 };
 
 module.exports = (req, res) => Bluebird.resolve()
