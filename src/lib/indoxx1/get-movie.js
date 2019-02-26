@@ -13,7 +13,18 @@ const { getValueBetweenBracket } = require('./utils');
 
 const baseUrl = 'https://indoxxi.bz';
 
-const getMovie = (slug, movieType) => Bluebird.resolve()
+_.mixin({
+  compactObject: (o) => {
+    _.each(o, (v, k) => {
+      if (!v) {
+        delete o[k];
+      }
+    });
+    return o;
+  },
+});
+
+const getMovie = (slug, movieType, shouldExtractMetaData = false) => Bluebird.resolve()
   .then(async () => {
     const movieUrl = baseUrl + slug;
 
@@ -37,9 +48,12 @@ const getMovie = (slug, movieType) => Bluebird.resolve()
     let sourceMetaData;
     let episodes;
     if (movieType === 'film-series') {
-      // episodes = await getSeriesEpisodesMetaData(playUrl, keyStr, playResponse);
-      episodes = await getSeriesEpisodes(playResponse);
-    } else {
+      if (shouldExtractMetaData) {
+        episodes = await getSeriesEpisodesMetaData(playUrl, keyStr, playResponse);
+      } else {
+        episodes = await getSeriesEpisodes(playResponse);
+      }
+    } else if (shouldExtractMetaData) {
       sourceMetaData = await getSourceMetaData(playUrl, keyStr, playResponse);
     }
 
@@ -110,7 +124,7 @@ const getMovie = (slug, movieType) => Bluebird.resolve()
       day: _.replace(day, /[^0-9]/g, ''),
     };
 
-    return {
+    return _.compactObject({
       countries,
       coverImageUrl,
       directors,
@@ -131,7 +145,7 @@ const getMovie = (slug, movieType) => Bluebird.resolve()
       summary,
       trailerUrl,
       type: movieType,
-    };
+    });
   });
 
 module.exports = getMovie;

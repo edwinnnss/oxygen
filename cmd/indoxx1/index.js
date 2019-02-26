@@ -3,9 +3,9 @@ const movieScrapper = require('./movie');
 
 Bluebird.resolve()
   .then(async () => {
-    // await movieScrapper('movie');
-    // await movieScrapper('film-semi');
-    await movieScrapper('film-series');
+    await movieScrapper('film-series', true);
+    await movieScrapper('movie', true);
+    await movieScrapper('film-semi', true);
   })
   .catch(console.log)
   .finally(() => process.exit(3));

@@ -14,7 +14,7 @@ if (!fs.existsSync('tmp')) {
   fs.mkdirSync('tmp');
 }
 
-module.exports = movieType => Bluebird.resolve()
+module.exports = (movieType, shouldExtractMetaData = false) => Bluebird.resolve()
   .then(async () => {
     let slugs;
     let counter = 1;
@@ -40,7 +40,7 @@ module.exports = movieType => Bluebird.resolve()
 
       while (tryAgain) {
         try {
-          const movie = await getMovie(slug, movieType);
+          const movie = await getMovie(slug, movieType, shouldExtractMetaData);
 
           if (movie) {
             await movieQuery.upsert(movie);
@@ -57,7 +57,7 @@ module.exports = movieType => Bluebird.resolve()
           console.log(`[${tryAgain}/5] Try again with error ${JSON.stringify(error, null, 2)}`);
         }
       }
-    }, { concurrency: 5 });
+    }, { concurrency: 20 });
 
     fs.writeFileSync(`problematicUrls-${movieType}.json`, JSON.stringify(problematicUrls, null, 2));
   });
