@@ -138,7 +138,7 @@ const getMovie = (slug, movieType, shouldExtractMetaData = false) => Bluebird.re
       ratingCount,
       ratingValue: (ratingValue === 'N/A') ? '0' : ratingValue,
       released,
-      slug: _.kebabCase(`${name}-${released.year || ''}`),
+      slug: _.kebabCase(`${encodeURIComponent(name)}-${released.year || ''}`),
       source: movieUrl,
       sourceMetaData,
       stars,
@@ -152,8 +152,8 @@ module.exports = getMovie;
 
 // Bluebird.resolve()
 //   .then(async () => {
-//     const movie = await getMovie('/film-seri/cheers-season-6-1987-3xs6', 'film-series');
-//     console.log(JSON.stringify(movie.episodes, null, 2));
+//     const movie = await getMovie('/movie/-2016-ard9', 'movie');
+//     console.log(movie);
 //   })
 //   .catch(console.log)
 //   .finally(() => process.exit(3));
