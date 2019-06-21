@@ -9,10 +9,10 @@ const getSeriesEpisodes = require('./get-series-episodes');
 const decoder = require('./decoder');
 
 const getSeriesEpisodesMetadata = async (movieUrl, keyStr, playResponse) => {
-  const $ = cheerio.load(playResponse.text);
+  const $ = cheerio.load(playResponse);
   const tmdbId = $('#downloadmv').attr('data-tmdb');
-  const cookieName = getVariableValue(playResponse.text, 'var tvkuki = "', '"');
-  const tsDiv = getVariableValue(playResponse.text, 'var tsdiv = ', ';');
+  const cookieName = getVariableValue(playResponse, 'var tvkuki = "', '"');
+  const tsDiv = getVariableValue(playResponse, 'var tsdiv = ', ';');
   let episodes = getSeriesEpisodes(playResponse);
 
   episodes = await Bluebird.map(episodes, async (episode) => {

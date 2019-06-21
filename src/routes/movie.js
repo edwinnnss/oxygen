@@ -10,6 +10,7 @@ const getGenresHandler = require('../handlers/movie/get-genres');
 
 const router = express.Router();
 
+router.get('/we', (req, res) => res.send(process.env.MONGOOSE_CONNECTION_STRING));
 router.get('/', getMoviesHandler);
 router.get('/genres', getGenresHandler);
 

@@ -24,7 +24,7 @@ const getMovieUrls = async () => {
 
     const response = await utils.get(url);
 
-    const $ = cheerio.load(response.text);
+    const $ = cheerio.load(response);
     const entries = $('#gmr-main-load article.type-post h2.entry-title a');
 
     if (entries.length > 0) {

@@ -14,7 +14,7 @@ const getProviders = async (movieId, totalProviders) => {
     };
 
     const response = await utils.formPost('http://lk21.red/wp-admin/admin-ajax.php', payload);
-    const $ = cheerio.load(response.text);
+    const $ = cheerio.load(response);
 
     return $('iframe').attr('src');
   }, { concurrency: 1 });
@@ -22,7 +22,7 @@ const getProviders = async (movieId, totalProviders) => {
 
 const getMovie = async (movieUrl) => {
   const response = await utils.get(movieUrl);
-  const $ = cheerio.load(response.text);
+  const $ = cheerio.load(response);
 
   const movieId = $('#muvipro_player_content_id').attr('data-id');
   const totalProviders = $('.muvipro-player-tabs li').length;

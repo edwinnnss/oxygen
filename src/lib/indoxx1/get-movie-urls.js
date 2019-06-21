@@ -29,7 +29,7 @@ const getMovieUrls = async (movieType) => {
 
     const response = await utils.get(url);
 
-    const $ = cheerio.load(response.text);
+    const $ = cheerio.load(response);
 
     const entries = $('#movie-featured div a').length;
 

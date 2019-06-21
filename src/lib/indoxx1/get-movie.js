@@ -57,7 +57,7 @@ const getMovie = (slug, movieType, shouldExtractMetaData = false) => Bluebird.re
       sourceMetaData = await getSourceMetaData(playUrl, keyStr, playResponse);
     }
 
-    const $ = cheerio.load(response.text);
+    const $ = cheerio.load(response);
     const posterUrl = getValueBetweenBracket($('div.mvic-thumb').attr('style'));
     const coverImageUrl = getValueBetweenBracket($('#mv-ply').attr('style'));
     const duration = _.replace($('#mv-info > div.mvi-content > div.mvic-desc > div.mvic-info > div.mvici-right > p:nth-child(1)'), /[^0-9]/g, '');
