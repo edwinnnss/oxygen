@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "netlify-lambda build src",
-    "start": "node server-local.js",
+    "build": "netlify-lambda build src/express",
+    "start": "node src/index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
