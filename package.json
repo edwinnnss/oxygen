@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "netlify-lambda build src/express",
-    "start": "node src/index",
+    "start": "node src/express/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -24,7 +24,9 @@
     "moment": "^2.23.0",
     "mongoose": "^5.4.5",
     "morgan": "^1.9.1",
-    "superagent": "^4.1.0"
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "superagent": "^5.1.0"
   },
   "devDependencies": {
     "eslint": "^5.16.0",

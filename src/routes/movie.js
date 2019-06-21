@@ -8,7 +8,7 @@ const getRecommendationHandler = require('../handlers/movie/get-recommendation')
 const getDistinctFieldHandler = require('../handlers/movie/get-distinct-field');
 const getGenresHandler = require('../handlers/movie/get-genres');
 
-const router = express();
+const router = express.Router();
 
 router.get('/', getMoviesHandler);
 router.get('/genres', getGenresHandler);

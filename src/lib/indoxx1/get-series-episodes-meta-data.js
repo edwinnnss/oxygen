@@ -1,14 +1,12 @@
 const Bluebird = require('bluebird');
 const cheerio = require('cheerio');
 const _ = require('lodash');
-const superagent = require('superagent').agent();
+const request = require('superagent');
 
 const { getVariableValue, modifySourceMetaData } = require('./utils');
 const getSeriesEpisodes = require('./get-series-episodes');
 
 const decoder = require('./decoder');
-
-const request = Bluebird.promisifyAll(superagent);
 
 const getSeriesEpisodesMetadata = async (movieUrl, keyStr, playResponse) => {
   const $ = cheerio.load(playResponse.text);

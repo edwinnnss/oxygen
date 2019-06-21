@@ -1,13 +1,11 @@
 // const Bluebird = require('bluebird');
 // const cheerio = require('cheerio');
 // const _ = require('lodash');
-// const superagent = require('superagent').agent();
+// const request = require('superagent');
 
 // const { getVariableValue, modifySourceMetaData } = require('./utils');
 
 // const decoder = require('./decoder');
-
-// const request = Bluebird.promisifyAll(superagent);
 
 // const getTotalEpisodes = (playResponse) => {
 //   let episodesHtml = getVariableValue(playResponse.text, 'var episodes = \'', '\'');

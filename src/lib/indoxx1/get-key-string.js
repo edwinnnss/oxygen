@@ -1,8 +1,5 @@
 const Bluebird = require('bluebird');
-
-const superagent = require('superagent').agent();
-
-const request = Bluebird.promisifyAll(superagent);
+// const superagent = require('superagent');
 
 const getKeyStr = movieUrl => Bluebird.resolve()
   .then(async () => {

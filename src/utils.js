@@ -1,13 +1,15 @@
 const _ = require('lodash');
 const Bluebird = require('bluebird');
-const superagent = require('superagent').agent();
-
-const request = Bluebird.promisifyAll(superagent);
+const request = require('request-promise');
+// const superagent = require('superagent');
 
 exports.checkResponse = async (url) => {
-  return request.get(url)
-    .set('Range', 'bytes=0-150')
-    .timeout(10000);
+  return request.get(url, {
+    headers: {
+      'Range': 'bytes=0-150',
+    },
+    timeout: 10000,
+  });
 };
 
 exports.get = async (url) => {
@@ -18,7 +20,7 @@ exports.get = async (url) => {
 
   while (error && credit) {
     try {
-      response = await request.get(url).timeout(10000);
+      response = await request.get(url, { timeout: 10000 });
       error = false;
     } catch (errResponse) {
       console.log(`Connection Error try again to scrape ${url}! ${credit}`);
@@ -45,10 +47,10 @@ exports.formPost = async (url, payload) => {
   while (error && credit) {
     try {
       response = await request
-        .post(url)
-        .send(payload)
-        .type('form')
-        .timeout(10000);
+        .post(url, {
+          form: payload,
+          timeout: 10000,
+        });
 
       error = false;
     } catch (errResponse) {
@@ -102,6 +104,7 @@ exports.retry = (task, credit = 5) => Bluebird.resolve()
   });
 
 exports.getNumber = (rawNum, defaultNumber) => {
+  console.log(typeof windows);
   if (!rawNum) {
     return defaultNumber;
   }

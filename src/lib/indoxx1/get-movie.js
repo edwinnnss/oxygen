@@ -138,7 +138,7 @@ const getMovie = (slug, movieType, shouldExtractMetaData = false) => Bluebird.re
       ratingCount,
       ratingValue: (ratingValue === 'N/A') ? '0' : ratingValue,
       released,
-      slug: _.kebabCase(`${encodeURIComponent(name)}-${released.year || ''}`),
+      slug: encodeURIComponent(_.kebabCase(`${name}-${released.year || ''}`)),
       source: movieUrl,
       sourceMetaData,
       stars,

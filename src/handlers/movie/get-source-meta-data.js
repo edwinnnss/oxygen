@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const Bluebird = require('bluebird');
 
 const Movie = require('../../database/models/movie');
@@ -6,7 +5,7 @@ const Movie = require('../../database/models/movie');
 const getKeyString = require('../../lib/indoxx1/get-key-string');
 const getSourceMetaData = require('../../lib/indoxx1/get-source-meta-data');
 const getSeriesEpisodeMetaData = require('../../lib/indoxx1/get-series-episode-meta-data');
-const getSeriesEpisodes = require('../../lib/indoxx1/get-series-episodes');
+// const getSeriesEpisodes = require('../../lib/indoxx1/get-series-episodes');
 const { get, getNumber } = require('../../utils');
 
 module.exports = (req, res) => Bluebird.resolve()

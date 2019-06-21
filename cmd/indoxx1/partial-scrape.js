@@ -17,7 +17,7 @@ const partialScrape = movieType => Bluebird.resolve()
     const slugs = [
       // '/film-seri/mrs-wilson-season-1-2019-1oxls1',
       // '/film-seri/proven-innocent-season-1-2019-1r86s1',
-      '/movie/dragon-kingdom-2019-c5cq',
+      '/movie/poor-boy-2019-bbhb',
     ];
 
     let counter = 1;
@@ -46,8 +46,8 @@ const partialScrape = movieType => Bluebird.resolve()
     }, { concurrency: 5 });
   });
 
-// Bluebird.resolve()
-//   .then(async () => {
-//     await partialScrape('movie');
-//     process.exit(3);
-//   });
+Bluebird.resolve()
+  .then(async () => {
+    await partialScrape('movie');
+    process.exit(3);
+  });

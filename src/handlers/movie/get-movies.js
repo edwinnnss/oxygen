@@ -3,7 +3,7 @@ const Bluebird = require('bluebird');
 const Movie = require('../../database/models/movie');
 
 const { moviesCache } = require('../../lru-caches');
-const { getNumber } = require('../../utils');
+const { getNumber, get } = require('../../utils');
 
 const MAX_LIMIT = 24;
 
