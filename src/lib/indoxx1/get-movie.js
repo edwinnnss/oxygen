@@ -11,7 +11,7 @@ const utils = require('../../utils');
 const getKeyStr = require('./get-key-string');
 const { getValueBetweenBracket } = require('./utils');
 
-const baseUrl = 'https://indoxxi.bz';
+const baseUrl = 'https://indoxxi.studio';
 
 _.mixin({
   compactObject: (o) => {

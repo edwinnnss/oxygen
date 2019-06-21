@@ -6,11 +6,11 @@ const request = Bluebird.promisifyAll(superagent);
 
 const getKeyStr = movieUrl => Bluebird.resolve()
   .then(async () => {
-    // const response = await request.get('https://indoxxi.bz/js/v76.js')
+    // const response = await request.get('https://indoxxi.studio/js/v76.js')
     //   .buffer(true)
     //   .set('Referer', movieUrl)
     //   .set('Accept', '*/*')
-    //   .set('Origin', 'https://indoxxi.bz')
+    //   .set('Origin', 'https://indoxxi.studio')
     //   .set('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36');
 
     // return getVariableValue(response.text, '_keyStr:"', '"');

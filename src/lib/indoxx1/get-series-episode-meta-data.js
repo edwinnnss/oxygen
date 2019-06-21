@@ -30,7 +30,7 @@ const getSeriesSourceMetaData = async (movieUrl, keyStr, playResponse, episodes,
   const encoded = await retry(() => request.get(tokenUrl)
     .set('Referer', movieUrl)
     .set('Accept', '*/*')
-    .set('Origin', 'https://indoxxi.bz')
+    .set('Origin', 'https://indoxxi.studio')
     .set('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'));
 
   const encodedText = decoder.decode(keyStr, encoded.text);
