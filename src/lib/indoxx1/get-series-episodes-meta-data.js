@@ -13,10 +13,17 @@ const getSeriesEpisodesMetadata = async (movieUrl, keyStr, playResponse) => {
   const tmdbId = $('#downloadmv').attr('data-tmdb');
   const cookieName = getVariableValue(playResponse, 'var tvkuki = "', '"');
   const tsDiv = getVariableValue(playResponse, 'var tsdiv = ', ';');
-  let episodes = getSeriesEpisodes(playResponse);
+  let episodes = await getSeriesEpisodes(playResponse);
 
   episodes = await Bluebird.map(episodes, async (episode) => {
-    const tokenUrl = decoder.getFilmSeriesTokenUrl(cookieName, tsDiv, tmdbId, episode.episode, episode.title, episode.index);
+    const tokenUrl = decoder.getFilmSeriesTokenUrl(
+      cookieName,
+      tsDiv,
+      tmdbId,
+      episode.eps,
+      episode.prov,
+      episode.nno,
+    );
 
     console.log('Request token to', tokenUrl);
     const encoded = await request.get(tokenUrl)

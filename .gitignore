@@ -6,3 +6,4 @@ test*
 backup/*
 *.sh
 problematicUrls*
+.netlify

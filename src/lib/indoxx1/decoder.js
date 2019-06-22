@@ -74,14 +74,13 @@ const getEpi = (e) => {
   return t < 0 && (t = e.indexOf("-")), t < 0 && (t = e.length), "episode" == (e = (e = e.substr(0, t)).toLowerCase()).substr(0, 7) && (e = e.substr(7)), "eps" == e.substr(0, 3) && (e = e.substr(3)), "ep" == e.substr(0, 2) && (e = e.substr(2)), "e" == e.substr(0, 1) && (e = e.substr(1)), "0" == (e = e.trim()).substr(0, 1) && e.length >= 2 && (e = e.substr(1)), e
 }
 
-exports.getFilmSeriesTokenUrl = (cookieName, tsDiv, dataTmbd, episode, title, index) => {
+exports.getFilmSeriesTokenUrl = (cookieName, tsDiv, dataTmbd, episode, prov, nno) => {
   const random = _.random(2);
   const possibleDomain = ['playtv', 'playtv2', 'playtv3'];
   const ts2 = createTs2(tsDiv);
   let f = getTS(cookieName, ts2);
   f = f.substr(0, f.length - 1);
   const b = crc32(btoa(ts2 + dataTmbd) + ts2 + dataTmbd + crc32(dataTmbd + ts2));
-  const e = encodeURIComponent(getEpi(title))
 
-  return `https://${possibleDomain[random]}.akubebas.com/?sv=1&ep=${_.trim(episode)}&no=${_.trim(index)}-${_.trim(e)}&token=${_.trim(f)}&k=${_.trim(b)}`;
+  return `https://${possibleDomain[random]}.akubebas.com/?sv=${prov}&ep=${_.trim(episode)}&no=${_.trim(nno)}&token=${_.trim(f)}&k=${_.trim(b)}`;
 };
