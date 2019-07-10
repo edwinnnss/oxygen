@@ -20,15 +20,19 @@ module.exports = (req, res) => Bluebird.resolve()
       return res.send(null);
     }
 
+    const source = movie.source
+      .replace('https://indoxxi.studio', 'https://indoxx1.show')
+      .replace('https://indoxxi.show', 'https://indoxx1.show');
+
     try {
-      let playUrl = movie.source + '/play';
+      let playUrl = source + '/play';
 
       if (movie.type === 'film-series') {
-        playUrl = movie.source + '/playtv';
+        playUrl = source + '/playtv';
       }
 
       const [keyString, playResponse] = await Bluebird.all([
-        await getKeyString(movie.source),
+        await getKeyString(source),
         await get(playUrl),
       ]);
 
@@ -38,7 +42,7 @@ module.exports = (req, res) => Bluebird.resolve()
         await movie.markModified('episodes');
         await movie.save();
       } else {
-        movie.sourceMetaData = await getSourceMetaData(movie.source, keyString, playResponse);
+        movie.sourceMetaData = await getSourceMetaData(source, keyString, playResponse);
 
         await movie.save();
       }

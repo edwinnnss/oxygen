@@ -7,3 +7,4 @@ backup/*
 *.sh
 problematicUrls*
 .netlify
+resource.js

@@ -9,6 +9,7 @@ exports.checkResponse = async (url) => {
       'Range': 'bytes=0-150',
     },
     timeout: 10000,
+    resolveWithFullResponse: true,
   });
 };
 

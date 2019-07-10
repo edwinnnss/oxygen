@@ -29,10 +29,10 @@ const filterResponse = async (source) => {
     try {
       const response = await checkResponse(source.file);
 
-      contentType = _.get(response, 'header.[content-type]');
-      statusCode = response.status;
+      contentType = _.get(response, 'headers.[content-type]');
+      ({ statusCode } = response);
     } catch (errResponse) {
-      statusCode = errResponse.status;
+      ({ statusCode } = errResponse);
     }
 
     if (statusCode < 200 || statusCode >= 300) {

@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Base64 = require('../base-64');
 
 /* eslint-disable */
 function getTS(cookieName, ts2) {
@@ -16,21 +17,13 @@ function crc32(x) {
   return e * (e + t) * Math.abs(e - t)
 }
 
-const Base64 = {
-  decode: function(_keyStr, x) {
-      var e, t, _, i, a, o, r = "",
-          s = 0;
-      for (x = x.replace(/[^A-Za-z0-9+\/=]/g, ""); s < x.length;) e = _keyStr.indexOf(x.charAt(s++)) << 2 | (i = _keyStr.indexOf(x.charAt(s++))) >> 4, t = (15 & i) << 4 | (a = _keyStr.indexOf(x.charAt(s++))) >> 2, _ = (3 & a) << 6 | (o = _keyStr.indexOf(x.charAt(s++))), r += String.fromCharCode(e), 64 != a && (r += String.fromCharCode(t)), 64 != o && (r += String.fromCharCode(_));
-      return r = Base64._utf8_decode(r)
-  },
-  _utf8_decode: function(x) {
-    for (var e = "", t = 0, _ = c1 = c2 = 0; t < x.length;)(_ = x.charCodeAt(t)) < 128 ? (e += String.fromCharCode(_), t++) : _ > 191 && _ < 224 ? (c2 = x.charCodeAt(t + 1), e += String.fromCharCode((31 & _) << 6 | 63 & c2), t += 2) : (c2 = x.charCodeAt(t + 1), c3 = x.charCodeAt(t + 2), e += String.fromCharCode((15 & _) << 12 | (63 & c2) << 6 | 63 & c3), t += 3);
-    return e
-  }
-}
-
 function btoa(str) {
   return Buffer.from(str).toString('base64');
+}
+
+exports.rc4 = (e, t) => {
+  var i = (t = Base64.decode(t)).lastIndexOf("]");
+  return t = t.substr(0, i + 1)
 }
 
 exports.decode = (_keyStr, e) => {
@@ -50,7 +43,7 @@ exports.getTokenUrl = (cookieName, dataTmbd, ts2) => {
 
   const k = crc32(btoa(t + dataTmbd) + t + dataTmbd + crc32(dataTmbd + t));
 
-  return `https://${possibleDomain[random]}.akubebas.com/?token=${ts}&k=${k}&v=static7.js`;
+  return `https://${possibleDomain[random]}.akubebas.com/?token=${ts}&k=${k}&v=static8.js`;
 };
 
 function calcTime(e) {

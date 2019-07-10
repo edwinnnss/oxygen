@@ -9,37 +9,38 @@ const { retry } = require('../../utils');
 const decoder = require('./decoder');
 
 const getSeriesSourceMetaData = async (movieUrl, keyStr, playResponse, episodes, indexQuery) => {
+  console.log('calling getSeriesSourceMetaData()');
   const $ = cheerio.load(playResponse);
   const tmdbId = $('#downloadmv').attr('data-tmdb');
   const cookieName = getVariableValue(playResponse, 'var tvkuki = "', '"');
   const tsDiv = getVariableValue(playResponse, 'var tsdiv = ', ';');
 
+  const episode = _.find(episodes, { eps: indexQuery + '' });
+  const episodeIndex = _.findIndex(episodes, { eps: indexQuery + '' });
 
-  const episode = _.find(episodes, { index: indexQuery });
-  const episodeIndex = _.findIndex(episodes, { index: indexQuery });
-  console.log(episodes);
   if (episodeIndex < 0 || !episode) {
     return episodes;
   }
-
-  const tokenUrl = decoder.getFilmSeriesTokenUrl(cookieName, tsDiv, tmdbId, episode.episode, episode.title, episode.index);
+  const tokenUrl = decoder.getFilmSeriesTokenUrl(cookieName, tsDiv, tmdbId, episode.eps, episode.prov, episode.nno);
 
   console.log('Request token to', tokenUrl);
   // const encoded = await retry(() => request.get(tokenUrl)
   //   .set('Referer', movieUrl)
   //   .set('Accept', '*/*')
-  //   .set('Origin', 'https://indoxxi.studio')
+  //   .set('Origin', 'https://indoxx1.show')
   //   .set('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'));
   const encoded = await retry(() => request.get(tokenUrl, {
     headers: {
       'Referer': movieUrl,
       'Accept': '*/*',
-      'Origin': 'https://indoxxi.studio',
+      'Origin': 'https://indoxx1.show',
       'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
     },
   }));
+  console.log(encoded, 'ENCODED');
 
-  const encodedText = decoder.decode(keyStr, encoded);
+  const encodedText = decoder.rc4(keyStr, encoded);
+  console.log(encodedText, 'ENCODED RESULT SOURCEMETADATA');
 
   if (!encodedText) {
     return episodes;
@@ -50,7 +51,6 @@ const getSeriesSourceMetaData = async (movieUrl, keyStr, playResponse, episodes,
   episode.sourceMetaData = extractedSourceMetaData;
   episodes[episodeIndex] = episode;
 
-  console.log(episodes);
   return episodes;
 };
 
