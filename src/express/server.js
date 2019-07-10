@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use(morgan('combined'));
 
 app.use('/movie', movieRouters);
-app.use('/.netlify/functions/server', movieRouters);
+app.use('/.netlify/functions/server/movie', movieRouters);
 
 app.listen(port, () => console.log(`Start application at http://localhost:${port}/movie`));
 
