@@ -33,7 +33,7 @@ Bluebird.resolve()
     console.log('Getting random movie...');
     const movie = await getRandomMovie();
 
-    const message = `Nonton film ${movie.name}`
+    const message = `Nonton film ${movie.name} | Tanpa Iklan Sub Indo`
       + `\nQuality: ${_.get(QUALITY_FORMAT_MAPPING, `${movie.quality}.name`, 'HD')}`
       + ` | Genre: ${_.join(_.map(movie.genres, 'label'), ', ')}`
       + `\n\n${movie.summary.length > 150 ? movie.summary.substring(0, 147) + '...' : movie.summary}`
