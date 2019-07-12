@@ -2,6 +2,7 @@ require('../src/init');
 
 const _ = require('lodash');
 const fs = require('fs');
+const argv = require('minimist')(process.argv.slice(2));
 const request = require('request-promise');
 const Bluebird = require('bluebird');
 const Movie = require('../src/database/models/movie');
@@ -30,8 +31,10 @@ const getRandomMovie = async () => {
 
 Bluebird.resolve()
   .then(async () => {
-    console.log('Getting random movie...');
-    const movie = await getRandomMovie();
+    console.log('Getting movie...');
+
+    const { slug } = argv;
+    const movie = slug ? await Movie.findOne({ slug }) : await getRandomMovie();
 
     const message = `Nonton film ${movie.name} | Tanpa Iklan Sub Indo`
       + `\nQuality: ${_.get(QUALITY_FORMAT_MAPPING, `${movie.quality}.name`, 'HD')}`

@@ -22,6 +22,7 @@
     "is-url": "^1.2.4",
     "lodash": "^4.17.11",
     "lru-cache": "^5.1.1",
+    "minimist": "^1.2.0",
     "moment": "^2.23.0",
     "mongoose": "^5.4.5",
     "morgan": "^1.9.1",
