@@ -15,13 +15,13 @@ const getRandomMovie = async () => {
 
   let movie = await Movie.findOne().skip(random);
 
-  const slugsHasBeenPosted = JSON.parse(fs.readFileSync('schedulers/slug.json'));
+  const slugsHasBeenPosted = JSON.parse(fs.readFileSync(__dirname + '/slug.json'));
 
   if (slugsHasBeenPosted.find(slug => slug === movie.slug)) {
     movie = await getRandomMovie();
   } else {
     fs.writeFileSync(
-      'schedulers/slug.json',
+      __dirname + '/slug.json',
       JSON.stringify(slugsHasBeenPosted.concat(movie.slug), null, 2),
     );
   }
