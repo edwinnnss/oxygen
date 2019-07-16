@@ -42,8 +42,15 @@ Bluebird.resolve()
       + `\n\n${movie.summary.length > 150 ? movie.summary.substring(0, 147) + '...' : movie.summary}`
       + `\n\nlink: https://nontongue.xyz/movie/${movie.slug}`;
 
+    const resultGetPageAccessToken = (await request.get(
+      `https://graph.facebook.com/${process.env.PAGE_ID}?fields=access_token&access_token=${process.env.USER_ACCESS_TOKEN}`,
+      { json: true },
+    ));
+
+    const pageAccessToken = resultGetPageAccessToken.access_token;
+
     const url = `https://graph.facebook.com/v3.3/${process.env.PAGE_ID}/feed`
-      + `?access_token=${process.env.PAGE_ACCESS_TOKEN}`
+      + `?access_token=${pageAccessToken}`
       + `&message=${message}`
       + `&link=https://nontongue.xyz/movie/${movie.slug}`;
 
