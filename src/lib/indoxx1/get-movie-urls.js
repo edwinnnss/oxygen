@@ -3,9 +3,9 @@ const cheerio = require('cheerio');
 const utils = require('../../utils');
 
 const movieTypeMapping = {
-  movie: 'https://indoxx1.show/muvi',
-  'film-series': 'https://indoxx1.show/tv',
-  'film-semi': 'https://indoxx1.show/film-semi-terbaru',
+  movie: 'https://indoxx1.network/muvi',
+  'film-series': 'https://indoxx1.network/tv',
+  'film-semi': 'https://indoxx1.network/film-semi-terbaru',
 };
 
 const getMovieUrls = async (movieType) => {

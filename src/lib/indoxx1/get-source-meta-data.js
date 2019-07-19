@@ -19,14 +19,14 @@ const getSourceMetaData = async (movieUrl, keyStr, playResponse) => {
   // const encoded = await superagent.get(tokenUrl)
   //   .set('Referer', movieUrl)
   //   .set('Accept', '*/*')
-  //   .set('Origin', 'https://indoxx1.show')
+  //   .set('Origin', 'https://indoxx1.network')
   //   .set('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36');
 
   const encoded = await request.get(tokenUrl, {
     headers: {
       'Referer': movieUrl,
       'Accept': '*/*',
-      'Origin': 'https://indoxx1.show',
+      'Origin': 'https://indoxx1.network',
       'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
     },
   });
