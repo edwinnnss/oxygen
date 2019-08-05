@@ -27,20 +27,20 @@ const getSeriesSourceMetaData = async (movieUrl, keyStr, playResponse, episodes,
   // const encoded = await retry(() => request.get(tokenUrl)
   //   .set('Referer', movieUrl)
   //   .set('Accept', '*/*')
-  //   .set('Origin', 'https://indoxx1.network')
+  //   .set('Origin', 'https://indoxx1.stream')
   //   .set('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'));
   const encoded = await retry(() => request.get(tokenUrl, {
     headers: {
       'Referer': movieUrl,
       'Accept': '*/*',
-      'Origin': 'https://indoxx1.network',
+      'Origin': 'https://indoxx1.stream',
       'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
     },
   }));
   console.log(encoded, 'ENCODED');
 
   const encodedText = decoder.rc4(keyStr, encoded);
-  console.log(encodedText, 'ENCODED RESULT SOURCEMETADATA');
+  console.log(JSON.parse(encodedText)[0], 'ENCODED RESULT SOURCEMETADATA');
 
   if (!encodedText) {
     return episodes;

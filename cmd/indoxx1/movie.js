@@ -19,12 +19,13 @@ module.exports = (movieType, shouldExtractMetaData = false) => Bluebird.resolve(
     let slugs;
     let counter = 1;
 
-    await utils.get('https://indoxxi.show');
+    await utils.get('https://indoxx1.stream');
 
     const problematicUrls = [];
     // const movieUrlPath = `tmp/tmdb-${movieType}-urls.json`;
     // const movieUrlPath = 'tmp/series-belom-kelar.json';
-    const movieUrlPath = 'tmp/dub.json';
+    const movieUrlPath = 'tmp/movies-belom-kelar.json';
+    // const movieUrlPath = 'tmp/dub.json';
 
     if (fs.existsSync(movieUrlPath)) {
       console.log('Using temp file');

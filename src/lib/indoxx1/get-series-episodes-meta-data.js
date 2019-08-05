@@ -35,7 +35,7 @@ const getSeriesEpisodesMetadata = async (movieUrl, keyStr, playResponse) => {
     const encoded = await request.get(tokenUrl)
       .set('Referer', movieUrl)
       .set('Accept', '*/*')
-      .set('Origin', 'https://indoxx1.network')
+      .set('Origin', 'https://indoxx1.stream')
       .set('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36');
 
     const encodedText = decoder.rc4(keyStr, encoded.text);

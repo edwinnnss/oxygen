@@ -18,7 +18,7 @@ const partialScrape = movieType => Bluebird.resolve()
       // '/film-seri/mrs-wilson-season-1-2019-1oxls1',
       // '/film-seri/proven-innocent-season-1-2019-1r86s1',
       // '/movie/poor-boy-2019-bbhb',
-      '/film-seri/high-school-lunch-cook-off-2019-1xkos1',
+      '/movie/i-almost-married-a-serial-killer-2019-csre',
     ];
 
     let counter = 1;
@@ -31,7 +31,7 @@ const partialScrape = movieType => Bluebird.resolve()
 
       while (tryAgain) {
         try {
-          const movie = await getMovie(slug, movieType);
+          const movie = await getMovie(slug, movieType, true);
 
           if (movie) {
             await movieQuery.upsert(movie);
@@ -49,6 +49,6 @@ const partialScrape = movieType => Bluebird.resolve()
 
 Bluebird.resolve()
   .then(async () => {
-    await partialScrape('film-series');
+    await partialScrape('movie');
     process.exit(3);
   });

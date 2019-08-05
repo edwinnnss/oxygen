@@ -21,8 +21,8 @@ module.exports = (req, res) => Bluebird.resolve()
     }
 
     const source = movie.source
-      .replace('https://indoxxi.studio', 'https://indoxx1.network')
-      .replace('https://indoxxi.show', 'https://indoxx1.network');
+      .replace('https://indoxxi.studio', 'https://indoxx1.stream')
+      .replace('https://indoxx1.stream', 'https://indoxx1.stream');
 
     try {
       let playUrl = source + '/play';
@@ -38,6 +38,7 @@ module.exports = (req, res) => Bluebird.resolve()
 
       if (movie.type === 'film-series') {
         movie.episodes = await getSeriesEpisodeMetaData(playUrl, keyString, playResponse, movie.episodes, index);
+        console.log(movie.episodes, 'WCK');
 
         await movie.markModified('episodes');
         await movie.save();

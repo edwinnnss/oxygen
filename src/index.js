@@ -1,4 +1,4 @@
-require('../init');
+require('./init');
 
 const serverless = require('serverless-http');
 const express = require('express');
@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cors = require('cors');
 
-const movieRouters = require('../routes/movie');
+const movieRouters = require('./routes/movie');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,7 +17,6 @@ app.use(bodyParser.json());
 app.use(morgan('combined'));
 
 app.use('/movie', movieRouters);
-app.use('/.netlify/functions/server/movie', movieRouters);
 
 app.listen(port, () => console.log(`Start application at http://localhost:${port}/movie`));
 

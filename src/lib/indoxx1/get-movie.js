@@ -11,7 +11,7 @@ const utils = require('../../utils');
 const getKeyStr = require('./get-key-string');
 const { getValueBetweenBracket } = require('./utils');
 
-const baseUrl = 'https://indoxx1.network';
+const baseUrl = 'https://indoxx1.stream';
 
 _.mixin({
   compactObject: (o) => {
@@ -123,7 +123,8 @@ const getMovie = (slug, movieType, shouldExtractMetaData = false) => Bluebird.re
       month: _.replace(month, /[^0-9]/g, ''),
       day: _.replace(day, /[^0-9]/g, ''),
     };
-    console.log(episodes, 'END REESULT', movieUrl);
+
+    console.log(sourceMetaData, 'sourceMetaData')
 
     return _.compactObject({
       countries,
