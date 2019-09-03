@@ -11,7 +11,7 @@ const utils = require('../../utils');
 const getKeyStr = require('./get-key-string');
 const { getValueBetweenBracket } = require('./utils');
 
-const baseUrl = 'https://indoxx1.stream';
+const baseUrl = process.env.SOURCE_URL;
 
 _.mixin({
   compactObject: (o) => {

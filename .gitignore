@@ -8,4 +8,4 @@ backup/*
 problematicUrls*
 .netlify
 resource.js
-schedulers/slug.json
+schedulers/*.json

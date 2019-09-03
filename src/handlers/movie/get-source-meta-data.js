@@ -21,8 +21,8 @@ module.exports = (req, res) => Bluebird.resolve()
     }
 
     const source = movie.source
-      .replace('https://indoxxi.studio', 'https://indoxx1.stream')
-      .replace('https://indoxx1.stream', 'https://indoxx1.stream');
+      .replace('https://indoxx1.network', process.env.SOURCE_URL)
+      .replace('https://indoxx1.stream', process.env.SOURCE_URL);
 
     try {
       let playUrl = source + '/play';

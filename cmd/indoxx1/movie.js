@@ -19,7 +19,7 @@ module.exports = (movieType, shouldExtractMetaData = false) => Bluebird.resolve(
     let slugs;
     let counter = 1;
 
-    await utils.get('https://indoxx1.stream');
+    await utils.get(process.env.SOURCE_URL);
 
     const problematicUrls = [];
     // const movieUrlPath = `tmp/tmdb-${movieType}-urls.json`;
